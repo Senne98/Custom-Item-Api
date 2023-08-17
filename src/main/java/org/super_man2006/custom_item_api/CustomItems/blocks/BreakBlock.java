@@ -57,7 +57,7 @@ public class BreakBlock implements Listener {
         CustomItem customItem = null;
 
         if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"))) {
-            customItem = new CustomItem(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING)));
+            customItem = new CustomItem(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING)));
         }
 
         if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {

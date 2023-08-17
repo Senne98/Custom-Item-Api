@@ -29,12 +29,12 @@ public class CustomBlock {
     private Material material;
     private int cmd;
     private boolean cmdBoolean;
-    private String customItem;
+    private NamespacedKey customItem;
     private boolean dropVanillaBoolean;
     private Material dropVanilla;
     private NamespacedKey key;
     private Rotation rotation;
-    //private Material placedBlock;
+    private Material placedBlock;
 
     public CustomBlock(Material material, NamespacedKey key, int cmd) {
         if (CustomItemApi.cBlockList.containsKey(key)) {
@@ -45,7 +45,7 @@ public class CustomBlock {
         this.key = key;
         this.cmd = cmd;
         cmdBoolean = true;
-        customItem = "";
+        customItem = null;
         dropVanillaBoolean = false;
         rotation = Rotation.ALL_BLOCKFACE;
 
@@ -60,7 +60,7 @@ public class CustomBlock {
         this.material = material;
         this.key = key;
         cmdBoolean = false;
-        customItem = "";
+        customItem = null;
         dropVanillaBoolean = false;
         rotation = Rotation.ALL_BLOCKFACE;
 
@@ -80,46 +80,46 @@ public class CustomBlock {
         this.dropVanilla = CustomItemApi.cBlockList.get(key).dropVanilla;
         this.key = key;
         this.rotation = CustomItemApi.cBlockList.get(key).getRotation();
-        //this.placedBlock = CustomItemApi.cBlockList.get(key).getPlacedBlock();
+        this.placedBlock = CustomItemApi.cBlockList.get(key).getPlacedBlock();
 
     }
 
-    /*public Material getPlacedBlock() {
+    public Material getPlacedBlock() {
         return placedBlock;
     }
 
     public void setPlacedBlock(Material placedBlock) {
         this.placedBlock = placedBlock;
-    }*/
-
-    public void setDropItem(Material material) {
-        dropVanillaBoolean = true;
-        customItem = "";
-        dropVanilla = material;
     }
 
-    public void setDropItem(String customItem) {
+    /*public void setDropItem(Material material) {
+        dropVanillaBoolean = true;
+        customItem = null;
+        dropVanilla = material;
+    }*/
+
+    public void setDropItem(NamespacedKey customItem) {
         dropVanillaBoolean = false;
         this.customItem = customItem;
     }
 
     public void removeDropItem() {
         dropVanillaBoolean = false;
-        customItem = "";
+        customItem = null;
     }
 
-    public Material getDropVanilla() {
+    /*public Material getDropVanilla() {
         if (dropVanillaBoolean) {
             return dropVanilla;
         }
         return null;
-    }
+    }*/
 
-    public String getDropCustom() {
+    public NamespacedKey getDropCustom() {
         if (dropVanillaBoolean) {
             return null;
         }
-        if (customItem == "") {
+        if (customItem == null) {
             return null;
         }
         return customItem;
@@ -129,7 +129,7 @@ public class CustomBlock {
 
         World world = location.getWorld();
         Block block = world.getBlockAt(location);
-        block.setType(Material.STONE);
+        block.setType(placedBlock);
         BlockData blockData = block.getBlockData();
         world.setBlockData(location, blockData);
 
@@ -156,6 +156,9 @@ public class CustomBlock {
 
         PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, key.toString());
+        if (customItem != null) {
+            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
+        }
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType(), itemDisplayMinX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType(), itemDisplayY.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType(), itemDisplayMinY.getUniqueId());
@@ -335,7 +338,7 @@ public class CustomBlock {
         return cmdBoolean;
     }
 
-    public String getCustomItem() {
+    public NamespacedKey getCustomItem() {
         return customItem;
     }
 
