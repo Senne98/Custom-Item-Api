@@ -27,14 +27,14 @@ public final class CustomItemApi extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
 
-        NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
+        /*NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
         CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
         customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
 
         NamespacedKey itemKey = new NamespacedKey(plugin, "Test");
         CustomItem customItem = new CustomItem(Material.FURNACE, itemKey);
         customItem.setCustomBlock(blockKey);
-        customItem.setName(Component.text("Beautiful Furnace"));
+        customItem.setName(Component.text("Beautiful Furnace"));*/
 
         //Events
         getServer().getPluginManager().registerEvents(new PlaceBlock(), this);
