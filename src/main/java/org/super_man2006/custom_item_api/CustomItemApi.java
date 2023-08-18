@@ -45,6 +45,10 @@ public final class CustomItemApi extends JavaPlugin {
         ConfigurationSerialization.registerClass(CustomBlock.class);
         Read.read();
 
+        //bStats
+        int pluginId = 19559; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
+
         /*NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
         CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
         customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
