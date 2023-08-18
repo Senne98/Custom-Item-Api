@@ -87,11 +87,11 @@ public class PlaceBlock implements Listener {
 
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onJoin(PlayerJoinEvent e) {
         CustomItem customItem = new CustomItem(new NamespacedKey(CustomItemApi.plugin, "Test"));
         ItemStack itemStack = customItem.getItemstack();
         itemStack.setAmount(64);
         e.getPlayer().getInventory().addItem(itemStack);
-    }
+    }*/
 }

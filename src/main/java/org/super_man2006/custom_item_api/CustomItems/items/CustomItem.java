@@ -1,20 +1,20 @@
 package org.super_man2006.custom_item_api.CustomItems.items;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.super_man2006.custom_item_api.CustomItemApi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class CustomItem {
+public class CustomItem implements ConfigurationSerializable {
 
     boolean nameBoolean;
     boolean cmdBoolean;
@@ -405,6 +405,63 @@ public class CustomItem {
         }
 
         return NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "CItemCodeName"), PersistentDataType.STRING));
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("nameBoolean", nameBoolean);
+        data.put("cmdBoolean", cmdBoolean);
+        data.put("loreBoolean", loreBoolean);
+        data.put("material", material);
+        data.put("intTags", intTags);
+        data.put("booleanTags", booleanTags);
+        data.put("byteTags", byteTags);
+        data.put("byteArrayTags", byteArrayTags);
+        data.put("doubleTags", doubleTags);
+        data.put("floatTags", floatTags);
+        data.put("intArrayTags", intArrayTags);
+        data.put("longTags", longTags);
+        data.put("longArrayTags", longArrayTags);
+        data.put("shortTags", shortTags);
+        data.put("stringTags", stringTags);
+        data.put("tagKeys", tagKeys);
+        data.put("cmd", cmd);
+        data.put("name", GsonComponentSerializer.gson().serialize(name));
+        data.put("version", version);
+        data.put("key", key.asString());
+        if (loreBoolean) {
+            data.put("lore", lore);
+        }
+        data.put("customBlock", customBlock.asString());
+        return data;
+    }
+
+    public CustomItem(@NotNull Map<String, Object> data) {
+        nameBoolean = (Boolean) data.get("nameBoolean");
+        cmdBoolean = (Boolean) data.get("cmdBoolean");
+        loreBoolean = (Boolean) data.get("loreBoolean");
+        material = (Material) data.get("material");
+        intTags = (HashMap<String, Integer>) data.get("intTags");
+        booleanTags = (HashMap<String, Boolean>) data.get("booleanTags");
+        byteTags = (HashMap<String, Byte>) data.get("byteTags");
+        byteArrayTags = (HashMap<String, byte[]>) data.get("byteArrayTags");
+        doubleTags = (HashMap<String, Double>) data.get("doubleTags");
+        floatTags = (HashMap<String, Float>) data.get("floatTags");
+        intArrayTags = (HashMap<String, int[]>) data.get("intArrayTags");
+        longTags = (HashMap<String, Long>) data.get("longTags");
+        longArrayTags = (HashMap<String, long[]>) data.get("longArrayTags");
+        shortTags = (HashMap<String, Short>) data.get("shortTags");
+        stringTags = (HashMap<String, String>) data.get("stringTags");
+        tagKeys = (List<String>) data.get("tagKeys");
+        cmd = (int) data.get("cmd");
+        name = GsonComponentSerializer.gson().deserialize((String) data.get("name"));
+        version = (int) data.get("version");
+        key = NamespacedKey.fromString((String) data.get("key"));
+        if (loreBoolean) {
+            lore = (List<Component>) data.get("lore");
+        }
+        customBlock = NamespacedKey.fromString((String) data.get("customBlock"));
     }
 }
 

@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemDisplay;
@@ -14,6 +15,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 import org.super_man2006.custom_item_api.Coordinates.Coordinates;
@@ -21,11 +23,9 @@ import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class CustomBlock {
+public class CustomBlock implements ConfigurationSerializable {
     private Material material;
     private int cmd;
     private boolean cmdBoolean;
@@ -41,6 +41,7 @@ public class CustomBlock {
             return;
         }
 
+        placedBlock = Material.STONE;
         this.material = material;
         this.key = key;
         this.cmd = cmd;
@@ -57,6 +58,7 @@ public class CustomBlock {
             return;
         }
 
+        placedBlock = Material.STONE;
         this.material = material;
         this.key = key;
         cmdBoolean = false;
@@ -362,6 +364,47 @@ public class CustomBlock {
         }
 
         return result;
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("material", material);
+        data.put("cmd", cmd);
+        data.put("cmdBoolean", cmdBoolean);
+        if (customItem == null) {
+            data.put("customItem", "");
+        } else {
+            data.put("customItem", customItem);
+        }
+        data.put("dropVanillaBoolean", dropVanillaBoolean);
+        if (dropVanillaBoolean) {
+            data.put("dropVanilla", dropVanilla);
+        }
+        data.put("key", key.asString());
+        data.put("rotation", rotation);
+        data.put("placedBlock", placedBlock);
+        return data;
+    }
+
+    public CustomBlock(Map<String, Object> data) {
+        material = (Material) data.get("material");
+        cmd = (int) data.get("cmd");
+        cmdBoolean = (boolean) data.get("cmdBoolean");
+        if (((String) data.get("customItem")).equals("")) {
+            customItem = null;
+        } else {
+            customItem = NamespacedKey.fromString((String) data.get("customItem"));
+        }
+        dropVanillaBoolean = (boolean) data.get("dropVanillaBoolean");
+        if (dropVanillaBoolean) {
+            dropVanilla = (Material) data.get("dropVanilla");
+        } else {
+            dropVanilla = null;
+        }
+        key = NamespacedKey.fromString((String) data.get("key"));
+        rotation = (Rotation) data.get("rotation");
+        placedBlock = (Material) data.get("placedBlock");
     }
 
     public enum Rotation {
