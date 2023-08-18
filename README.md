@@ -1,5 +1,5 @@
 # Custom-Item-Api
-An API for making custom blocks and items.
+An API for making custom blocks and items for 1.20+
 
 ## How to use?
 
