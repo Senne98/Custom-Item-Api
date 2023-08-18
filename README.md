@@ -1,9 +1,9 @@
 # Custom-Item-Api
 An API for making custom blocks and items.
 
-### How to use?
+## How to use?
 
-#### Custom items
+### Custom items
 You can add a custom item by creating a ```new CustomItem(Material, NamespacedKey)```.
 This will create the custom item if there isn't a custom item with this NamespacedKey.
 You can change the texture,tags,...
@@ -18,7 +18,7 @@ customItem.setCustomBlock(blockKey);
 customItem.setName(Component.text("Beautiful Furnace"));
 ``````
 
-#### Custom items
+### Custom items
 You can add a custom item by creating a ```new CustomBlock(Material, NamespacedKey)```.
 This will create the custom item if there isn't a custom item with this NamespacedKey.
 You can change the texture,tags,...
@@ -32,6 +32,9 @@ CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
 customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
 ``````
 
-#### Features / Bugs
+### Save
+Items and Blocks you create get saved when you stop the server, if you want to be sure they get saved you can use Save#save().
+
+### Features / Bugs
 If you find bugs or want a feature to be added, ask in the [discord](https://discord.gg/DBabnRZAhC) or create an issue on [github](https://github.com/Senne98/Custom-Item-Api/issues).
 
