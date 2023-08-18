@@ -18,7 +18,7 @@ customItem.setCustomBlock(blockKey);
 customItem.setName(Component.text("Beautiful Furnace"));
 ``````
 
-### Custom items
+### Custom blocks
 You can add a custom item by creating a ```new CustomBlock(Material, NamespacedKey)```.
 This will create the custom item if there isn't a custom item with this NamespacedKey.
 You can change the texture,tags,...
