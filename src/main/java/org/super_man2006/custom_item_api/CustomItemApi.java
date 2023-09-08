@@ -6,11 +6,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.super_man2006.custom_item_api.CustomItems.blocks.BreakBlock;
-import org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock;
-import org.super_man2006.custom_item_api.CustomItems.blocks.LightUpdate;
-import org.super_man2006.custom_item_api.CustomItems.blocks.PlaceBlock;
+import org.super_man2006.custom_item_api.CustomItems.blocks.*;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
+import org.super_man2006.custom_item_api.commands.Give;
 import org.super_man2006.custom_item_api.files.Read;
 import org.super_man2006.custom_item_api.files.Save;
 
@@ -49,19 +47,21 @@ public final class CustomItemApi extends JavaPlugin {
         int pluginId = 19559; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
 
-        /*NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
+        NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
         CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
         customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
 
         NamespacedKey itemKey = new NamespacedKey(plugin, "Test");
         CustomItem customItem = new CustomItem(Material.FURNACE, itemKey);
         customItem.setCustomBlock(blockKey);
-        customItem.setName(Component.text("Beautiful Furnace"));*/
+        customItem.setName(Component.text("Beautiful Furnace"));
 
         //Events
         getServer().getPluginManager().registerEvents(new PlaceBlock(), this);
         getServer().getPluginManager().registerEvents(new BreakBlock(), this);
         getServer().getPluginManager().registerEvents(new LightUpdate(), this);
+        getServer().getPluginManager().registerEvents(new Give(), this);
+        getServer().getPluginManager().registerEvents(new PistonMove(), this);
     }
 
     @Override

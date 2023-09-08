@@ -33,13 +33,7 @@ public class BreakBlock implements Listener {
         AtomicBoolean contains = new AtomicBoolean();
         contains.set(false);
 
-        keyList.forEach(namespacedKey -> {
-            if (namespacedKey.getKey().equals(String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey)) {
-                contains.set(true);
-            }
-        });
-
-        if (!contains.get()) {
+        if (!container.has(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey))) {
             return;
         }
 
@@ -54,15 +48,15 @@ public class BreakBlock implements Listener {
 
         PersistentDataContainer dataContainer = itemDisplay.getPersistentDataContainer();
 
-        CustomItem customItem = null;
+        CustomItem customItem;
 
-        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"))) {
+        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "customItem"))) {
             customItem = new CustomItem(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING)));
-        }
 
-        if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {
-            Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.DROPPED_ITEM);
-            item.setItemStack(customItem.getItemstack());
+            if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+                Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.DROPPED_ITEM);
+                item.setItemStack(customItem.getItemstack());
+            }
         }
 
         container.remove(locationKey);

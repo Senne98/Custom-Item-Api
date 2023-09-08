@@ -11,6 +11,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.super_man2006.custom_item_api.CustomItemApi;
+import org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock;
 
 import java.util.*;
 
@@ -405,6 +406,22 @@ public class CustomItem implements ConfigurationSerializable {
         }
 
         return NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "CItemCodeName"), PersistentDataType.STRING));
+    }
+
+    /**
+     * Will return an {@link ItemStack} with the material the vanilla material associated with
+     * the {@link NamespacedKey} (similar to the give command).
+     * Else, it will return an {@link ItemStack} with all the properties from {@link #getItemstack()}.
+     * If there isn't a vanilla or custom item with this {@link NamespacedKey}, it will return <b>NULL</b>.
+     */
+    public static ItemStack getItemStack(NamespacedKey key) {
+        Material material = Material.matchMaterial(key.toString());
+
+        if (material != null) {
+            return new ItemStack(material);
+        }
+
+        return new CustomItem(key).getItemstack();
     }
 
     @Override
