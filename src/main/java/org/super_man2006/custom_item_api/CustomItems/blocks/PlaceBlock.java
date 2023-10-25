@@ -9,14 +9,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
-import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 
 import java.util.Collection;
-import java.util.List;
 
 public class PlaceBlock implements Listener {
 
@@ -41,7 +38,7 @@ public class PlaceBlock implements Listener {
         LightUpdate.onLightUpdate(e.getPlayer().getWorld().getBlockAt(e.getPlayer().getLocation().toBlockLocation()));
         e.setCancelled(true);
 
-        CustomItem customItem = new CustomItem(CustomItem.getCodeName(e.getItem()));
+        CustomItem customItem = CustomItem.fromNamespaceKey(CustomItem.getCodeName(e.getItem()));
         if (!customItem.hasCustomBlock()) {
             return;
         }
@@ -81,7 +78,7 @@ public class PlaceBlock implements Listener {
         }
 
         NamespacedKey cBlock = customItem.getCBlock();
-        CustomBlock customBlock = new CustomBlock(cBlock);
+        CustomBlock customBlock = CustomBlock.fromNamespacedKey(cBlock);
 
         customBlock.place(location, e.getBlockFace(), e.getPlayer());
 

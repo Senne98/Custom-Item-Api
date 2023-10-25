@@ -4,18 +4,12 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
-import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 import org.super_man2006.custom_item_api.Coordinates.Coordinates;
@@ -25,8 +19,12 @@ import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CustomBlock implements ConfigurationSerializable {
+public class CustomBlock {
+
+    public static HashMap<NamespacedKey, CustomBlock> instances = new HashMap<>();
+
     private Material material;
     private int cmd;
     private boolean cmdBoolean;
@@ -36,29 +34,15 @@ public class CustomBlock implements ConfigurationSerializable {
     private NamespacedKey key;
     private Rotation rotation;
     private Material placedBlock;
+    private CustomBlockActions actions;
 
-    public CustomBlock(Material material, NamespacedKey key, int cmd) {
-        if (CustomItemApi.cBlockList.containsKey(key)) {
+
+    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions) {
+        if (instances.containsKey(key)) {
             return;
         }
 
-        placedBlock = Material.STONE;
-        this.material = material;
-        this.key = key;
-        this.cmd = cmd;
-        cmdBoolean = true;
-        customItem = null;
-        dropVanillaBoolean = false;
-        rotation = Rotation.ALL_BLOCKFACE;
-
-        CustomItemApi.cBlockList.put(key, this);
-    }
-
-    public CustomBlock(Material material, NamespacedKey key) {
-        if (CustomItemApi.cBlockList.containsKey(key)) {
-            return;
-        }
-
+        this.actions = actions;
         placedBlock = Material.STONE;
         this.material = material;
         this.key = key;
@@ -67,32 +51,69 @@ public class CustomBlock implements ConfigurationSerializable {
         dropVanillaBoolean = false;
         rotation = Rotation.ALL_BLOCKFACE;
 
-        CustomItemApi.cBlockList.put(key, this);
+        instances.put(key, this);
     }
 
-    CustomBlock(NamespacedKey key) {
-        if (!CustomItemApi.cBlockList.containsKey(key)) {
-            return;
+    public static CustomBlock fromNamespacedKey(NamespacedKey key) {
+        if (!instances.containsKey(key)) {
+            return null;
         }
 
-        this.material = CustomItemApi.cBlockList.get(key).getMaterial();
-        this.cmd = CustomItemApi.cBlockList.get(key).getCmd();
-        this.cmdBoolean = CustomItemApi.cBlockList.get(key).getCmdBoolean();
-        this.customItem = CustomItemApi.cBlockList.get(key).getCustomItem();
-        this.dropVanillaBoolean = CustomItemApi.cBlockList.get(key).getDropVanillaBoolean();
-        this.dropVanilla = CustomItemApi.cBlockList.get(key).dropVanilla;
-        this.key = key;
-        this.rotation = CustomItemApi.cBlockList.get(key).getRotation();
-        this.placedBlock = CustomItemApi.cBlockList.get(key).getPlacedBlock();
+        return instances.get(key);
 
+    }
+
+    public static CustomBlock fromLocation(Location location) {
+        Chunk chunk = location.getChunk();
+        PersistentDataContainer container = chunk.getPersistentDataContainer();
+
+        AtomicBoolean contains = new AtomicBoolean();
+        contains.set(false);
+
+        if (!container.has(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey))) {
+            return null;
+        }
+
+        NamespacedKey uuidKey = new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey);
+
+        World world = location.getWorld();
+        UUID uuid = container.get(uuidKey, new UuidDataType());
+        ItemDisplay itemDisplay = (ItemDisplay) world.getEntity(uuid);
+
+        PersistentDataContainer dataContainer = itemDisplay.getPersistentDataContainer();
+        NamespacedKey key = NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING));
+
+
+        if (!instances.containsKey(key)) {
+            return null;
+        }
+
+        return instances.get(key);
+    }
+
+    public CustomBlockActions getActions() {
+        return actions;
+    }
+
+    public CustomBlock setActions(CustomBlockActions actions) {
+        this.actions = actions;
+        return this;
+    }
+
+    public boolean hasCustomItem() {
+        if (customItem == null) {
+            return false;
+        }
+        return true;
     }
 
     public Material getPlacedBlock() {
         return placedBlock;
     }
 
-    public void setPlacedBlock(Material placedBlock) {
+    public CustomBlock setPlacedBlock(Material placedBlock) {
         this.placedBlock = placedBlock;
+        return this;
     }
 
     /*public void setDropItem(Material material) {
@@ -101,9 +122,10 @@ public class CustomBlock implements ConfigurationSerializable {
         dropVanilla = material;
     }*/
 
-    public void setDropItem(NamespacedKey customItem) {
+    public CustomBlock setDropItem(NamespacedKey customItem) {
         dropVanillaBoolean = false;
         this.customItem = customItem;
+        return this;
     }
 
     public void removeDropItem() {
@@ -411,8 +433,9 @@ public class CustomBlock implements ConfigurationSerializable {
         return itemStack;
     }
 
-    public void setRotation(Rotation rotation) {
+    public CustomBlock setRotation(Rotation rotation) {
         this.rotation = rotation;
+        return this;
     }
 
     public Rotation getRotation() {
@@ -465,51 +488,10 @@ public class CustomBlock implements ConfigurationSerializable {
      * @return true if there is a custom block with the provided key.
      */
     public static boolean isCustomBlock(NamespacedKey key) {
-        if (CustomItemApi.cBlockList.containsKey(key)) {
+        if (instances.containsKey(key)) {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("material", material);
-        data.put("cmd", cmd);
-        data.put("cmdBoolean", cmdBoolean);
-        if (customItem == null) {
-            data.put("customItem", "");
-        } else {
-            data.put("customItem", customItem);
-        }
-        data.put("dropVanillaBoolean", dropVanillaBoolean);
-        if (dropVanillaBoolean) {
-            data.put("dropVanilla", dropVanilla);
-        }
-        data.put("key", key.asString());
-        data.put("rotation", rotation);
-        data.put("placedBlock", placedBlock);
-        return data;
-    }
-
-    public CustomBlock(Map<String, Object> data) {
-        material = (Material) data.get("material");
-        cmd = (int) data.get("cmd");
-        cmdBoolean = (boolean) data.get("cmdBoolean");
-        if (((String) data.get("customItem")).equals("")) {
-            customItem = null;
-        } else {
-            customItem = NamespacedKey.fromString((String) data.get("customItem"));
-        }
-        dropVanillaBoolean = (boolean) data.get("dropVanillaBoolean");
-        if (dropVanillaBoolean) {
-            dropVanilla = (Material) data.get("dropVanilla");
-        } else {
-            dropVanilla = null;
-        }
-        key = NamespacedKey.fromString((String) data.get("key"));
-        rotation = (Rotation) data.get("rotation");
-        placedBlock = (Material) data.get("placedBlock");
     }
 
     public enum Rotation {
@@ -517,5 +499,4 @@ public class CustomBlock implements ConfigurationSerializable {
         AROUND_Y,
         //ALL_LOOKING
     }
-
 }

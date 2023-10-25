@@ -10,12 +10,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
-import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
+import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
+import org.super_man2006.custom_item_api.events.CustomBlockBreakEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,8 +27,6 @@ public class BreakBlock implements Listener {
 
         Chunk chunk = location.getChunk();
         PersistentDataContainer container = chunk.getPersistentDataContainer();
-        Set<NamespacedKey> keys = container.getKeys();
-        List<NamespacedKey> keyList = keys.stream().toList();
 
         AtomicBoolean contains = new AtomicBoolean();
         contains.set(false);
@@ -48,10 +46,24 @@ public class BreakBlock implements Listener {
 
         PersistentDataContainer dataContainer = itemDisplay.getPersistentDataContainer();
 
+        CustomBlock customBlock;
         CustomItem customItem;
 
-        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "customItem"))) {
-            customItem = new CustomItem(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING)));
+        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey") )) {
+            customBlock = CustomBlock.fromNamespacedKey(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING)));
+        } else {
+            return;
+        }
+
+
+        CustomBlockBreakEvent customBlockBreakEvent = new CustomBlockBreakEvent(e, customBlock.getKey());
+        if (!customBlockBreakEvent.callEvent()) {
+            e.setCancelled(true);
+        }
+
+
+        if (customBlock.hasCustomItem()) {
+            customItem = CustomItem.fromNamespaceKey(customBlock.getCustomItem());
 
             if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {
                 Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.DROPPED_ITEM);
@@ -77,6 +89,5 @@ public class BreakBlock implements Listener {
         });
 
         itemDisplay.remove();
-
     }
 }
