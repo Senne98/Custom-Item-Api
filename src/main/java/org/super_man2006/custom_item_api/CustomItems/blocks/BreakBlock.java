@@ -77,11 +77,24 @@ public class BreakBlock implements Listener {
         PersistentDataContainer displayContainer = itemDisplay.getPersistentDataContainer();
 
         List<UUID> uuidList = new ArrayList<>();
-        uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType()));
-        uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType()));
-        uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType()));
-        uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType()));
-        uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType()));
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType()));
+        }
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType()));
+        }
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType()));
+        }
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType()));
+        }
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType()));
+        }
+        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType())) {
+            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType()));
+        }
 
         uuidList.forEach(uuid1 -> {
             ItemDisplay display = (ItemDisplay) world.getEntity(uuid1);

@@ -9,6 +9,8 @@ public class CustomItemEvents implements Listener {
 
     @EventHandler
     public void onVanillaInteract(PlayerInteractEvent e) {
+        if (e.getItem() == null) return;
+
         if (!CustomItem.isCustomItem(e.getItem())) {
             return;
         }
