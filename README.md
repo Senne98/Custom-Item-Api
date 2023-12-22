@@ -15,8 +15,14 @@
         <img src="https://img.shields.io/badge/-join_Discord-blue?logo=discord&style=flat&logoColor=white" /></a>
   </p>
 
-# Custom-Item-Api
-An API for making custom blocks and items for 1.20+
+</p>
+   </p>
+<p align="left">
+    <a href="https://discord.gg/DBabnRZAhC" alt="join_Discord">
+        <img src="https://cdn.modrinth.com/data/dw1mp4kD/images/0fa5f6a7090dff62370fb5cc3221b07e2af5a0be.png" width="550"/></a>
+  </p>
+
+An API for making custom blocks and items for 1.20+ on paperMC
 
 ## How to use?
 
@@ -28,7 +34,6 @@ If you want to place a custom block using this item you can add this with Custom
 
 example:
 ````java
-
 NamespacedKey itemKey = new NamespacedKey(plugin, "Test");
 CustomItem customItem = new CustomItem(Material.FURNACE, itemKey);
 customItem.setCustomBlock(blockKey);
@@ -48,9 +53,6 @@ NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
 CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
 customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
 ``````
-
-### Save
-Items and Blocks you create get saved when you stop the server, if you want to be sure they get saved you can use Save#save().
 
 ### Features / Bugs
 If you find bugs or want a feature to be added, ask in the [discord](https://discord.gg/DBabnRZAhC) or create an issue on [github](https://github.com/Senne98/Custom-Item-Api/issues).
