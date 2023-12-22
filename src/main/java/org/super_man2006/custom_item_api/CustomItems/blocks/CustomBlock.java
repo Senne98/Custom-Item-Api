@@ -37,13 +37,30 @@ public class CustomBlock {
     private CustomBlockActions actions;
 
 
-    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions) {
+    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions, Material placedBlock) {
         if (instances.containsKey(key)) {
-            return;
+            throw new IllegalArgumentException("CustomBlock with key " + key.toString() + " already exists!");
         }
 
         this.actions = actions;
-        placedBlock = Material.STONE;
+        this.placedBlock = placedBlock;
+        this.material = material;
+        this.key = key;
+        cmdBoolean = false;
+        customItem = null;
+        dropVanillaBoolean = false;
+        rotation = Rotation.ALL_BLOCKFACE;
+
+        instances.put(key, this);
+    }
+
+    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions) {
+        if (instances.containsKey(key)) {
+            throw new IllegalArgumentException("CustomBlock with key " + key.toString() + " already exists!");
+        }
+
+        this.actions = actions;
+        this.placedBlock = Material.STONE;
         this.material = material;
         this.key = key;
         cmdBoolean = false;
@@ -361,7 +378,7 @@ public class CustomBlock {
         chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey), new UuidDataType(), itemDisplayX.getUniqueId());
     }
 
-    private static AxisAngle4f leftRotationCalculation(BlockFace face) {
+    static AxisAngle4f leftRotationCalculation(BlockFace face) {
         float angle;
         AxisAngle4f leftRotation;
         float y = 0;
@@ -389,7 +406,7 @@ public class CustomBlock {
         return leftRotation;
     }
 
-    private static Vector3f scaleCalculation(String direction, BlockFace face) {
+    static Vector3f scaleCalculation(String direction, BlockFace face) {
         if (direction.equals("X")) {
             if (face == BlockFace.SOUTH || face == BlockFace.NORTH) {
                 return new Vector3f().add(0.001f, 1.001f, 1.001f);
