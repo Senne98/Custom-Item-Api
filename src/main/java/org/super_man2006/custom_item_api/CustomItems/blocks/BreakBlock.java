@@ -7,6 +7,7 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
@@ -63,11 +64,12 @@ public class BreakBlock implements Listener {
 
 
         if (customBlock.hasCustomItem()) {
-            customItem = CustomItem.fromNamespaceKey(customBlock.getCustomItem());
+            NamespacedKey customItemKey = customBlock.getCustomItem();
+            ItemStack dropItem = CustomItem.getItemStack(customItemKey);
 
-            if (e.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+            if (e.getPlayer().getGameMode() == GameMode.SURVIVAL && dropItem != null) {
                 Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.DROPPED_ITEM);
-                item.setItemStack(customItem.getItemstack());
+                item.setItemStack(dropItem);
             }
         }
 

@@ -25,21 +25,22 @@ public class CustomBlock {
 
     public static HashMap<NamespacedKey, CustomBlock> instances = new HashMap<>();
 
-    private Material material;
-    private int cmd;
-    private boolean cmdBoolean;
-    private NamespacedKey customItem;
-    private boolean dropVanillaBoolean;
-    private Material dropVanilla;
-    private NamespacedKey key;
-    private Rotation rotation;
-    private Material placedBlock;
-    private CustomBlockActions actions;
+    private Material material; //
+    private int cmd; //
+    private boolean cmdBoolean; //
+    private NamespacedKey customItem; //
+    private NamespacedKey key; //
+    private Rotation rotation; //
+    private Material placedBlock; //
+    private Class actions;
 
 
-    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions, Material placedBlock) {
+    public CustomBlock(Material material, NamespacedKey key, Class actions, Material placedBlock) {
         if (instances.containsKey(key)) {
             throw new IllegalArgumentException("CustomBlock with key " + key.toString() + " already exists!");
+        }
+        if (!CustomBlockActions.class.isAssignableFrom(actions)) {
+            throw new IllegalArgumentException("CustomBlockActions must be implemented!");
         }
 
         this.actions = actions;
@@ -48,15 +49,17 @@ public class CustomBlock {
         this.key = key;
         cmdBoolean = false;
         customItem = null;
-        dropVanillaBoolean = false;
         rotation = Rotation.ALL_BLOCKFACE;
 
         instances.put(key, this);
     }
 
-    public CustomBlock(Material material, NamespacedKey key, CustomBlockActions actions) {
+    public CustomBlock(Material material, NamespacedKey key, Class actions) {
         if (instances.containsKey(key)) {
             throw new IllegalArgumentException("CustomBlock with key " + key.toString() + " already exists!");
+        }
+        if (!CustomBlockActions.class.isAssignableFrom(actions)) {
+            throw new IllegalArgumentException("CustomBlockActions must be implemented!");
         }
 
         this.actions = actions;
@@ -65,7 +68,6 @@ public class CustomBlock {
         this.key = key;
         cmdBoolean = false;
         customItem = null;
-        dropVanillaBoolean = false;
         rotation = Rotation.ALL_BLOCKFACE;
 
         instances.put(key, this);
@@ -108,11 +110,11 @@ public class CustomBlock {
         return instances.get(key);
     }
 
-    public CustomBlockActions getActions() {
+    public Class getActions() {
         return actions;
     }
 
-    public CustomBlock setActions(CustomBlockActions actions) {
+    public CustomBlock setActions(Class actions) {
         this.actions = actions;
         return this;
     }
@@ -139,31 +141,16 @@ public class CustomBlock {
         dropVanilla = material;
     }*/
 
-    public CustomBlock setDropItem(NamespacedKey customItem) {
-        dropVanillaBoolean = false;
-        this.customItem = customItem;
+    public CustomBlock setDropItem(NamespacedKey item) {
+        this.customItem = item;
         return this;
     }
 
     public void removeDropItem() {
-        dropVanillaBoolean = false;
         customItem = null;
     }
 
-    /*public Material getDropVanilla() {
-        if (dropVanillaBoolean) {
-            return dropVanilla;
-        }
-        return null;
-    }*/
-
     public NamespacedKey getDropCustom() {
-        if (dropVanillaBoolean) {
-            return null;
-        }
-        if (customItem == null) {
-            return null;
-        }
         return customItem;
     }
 
@@ -473,10 +460,6 @@ public class CustomBlock {
 
     public NamespacedKey getCustomItem() {
         return customItem;
-    }
-
-    public boolean getDropVanillaBoolean() {
-        return dropVanillaBoolean;
     }
 
     public NamespacedKey getKey() {

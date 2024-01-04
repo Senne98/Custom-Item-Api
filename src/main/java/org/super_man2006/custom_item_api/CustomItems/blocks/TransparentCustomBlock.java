@@ -24,13 +24,13 @@ import java.util.List;
 
 public class TransparentCustomBlock extends CustomBlock {
 
-    public TransparentCustomBlock(Material material, NamespacedKey key, CustomBlockActions actions, Material placedBlock) {
+    public TransparentCustomBlock(Material material, NamespacedKey key, Class actions, Material placedBlock) {
         super(material, key, actions, placedBlock);
 
         instances.put(key, this);
     }
 
-    public TransparentCustomBlock(Material material, NamespacedKey key, CustomBlockActions actions) {
+    public TransparentCustomBlock(Material material, NamespacedKey key, Class actions) {
         super(material, key, actions);
 
         instances.put(key, this);
