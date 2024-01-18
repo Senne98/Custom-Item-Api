@@ -10,6 +10,8 @@ import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemActions;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemEvents;
 import org.super_man2006.custom_item_api.commands.Give;
+import org.super_man2006.custom_item_api.commands.customApi.CustomApiCommands;
+import org.super_man2006.custom_item_api.commands.customApi.CustomApiTabComplete;
 import org.super_man2006.custom_item_api.events.CustomItemInteractEvent;
 
 import java.io.File;
@@ -41,6 +43,17 @@ public final class CustomItemApi extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PistonMove(), this);
         getServer().getPluginManager().registerEvents(new CustomBlockEvents(), this);
         getServer().getPluginManager().registerEvents(new CustomItemEvents(), this);
+        getServer().getPluginManager().registerEvents(new Permissions(), this);
+
+        //Permissions
+        getServer().getPluginManager().addPermission(Permissions.getCustomApiOp());
+        getServer().getPluginManager().addPermission(Permissions.getCustomApiGiveCmd());
+
+        //Commands
+        getCommand("CustomApi").setExecutor(new CustomApiCommands());
+
+        //TabComplete
+        getCommand("CustomApi").setTabCompleter(new CustomApiTabComplete());
 
         CustomBlock customBlock = new TransparentCustomBlock(Material.FURNACE, new NamespacedKey(plugin, "Test"), new actionTest().getClass(), Material.GLASS)
                 .setRotation(CustomBlock.Rotation.AROUND_Y).setDropItem(new NamespacedKey(plugin, "Test"));

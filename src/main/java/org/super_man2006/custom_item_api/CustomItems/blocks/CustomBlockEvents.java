@@ -42,7 +42,9 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        e.getPlayer().performCommand(customBlock.getCommands().get("click"));
+        if (customBlock.getCommands().get("click") != null && !customBlock.getCommands().get("click").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("click"));
+        }
     }
 
     @EventHandler
@@ -59,7 +61,9 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        e.getPlayer().performCommand(customBlock.getCommands().get("break"));
+        if (customBlock.getCommands().get("break") != null && !customBlock.getCommands().get("break").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("break"));
+        }
     }
 
     @EventHandler
@@ -76,6 +80,8 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        e.getPlayer().performCommand(customBlock.getCommands().get("place"));
+        if (customBlock.getCommands().get("place") != null && !customBlock.getCommands().get("place").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("place"));
+        }
     }
 }

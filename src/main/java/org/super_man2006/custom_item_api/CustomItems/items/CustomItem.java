@@ -429,6 +429,10 @@ public class CustomItem {
             return new ItemStack(material);
         }
 
+        if (!instances.containsKey(key)) {
+            return null;
+        }
+
         return fromNamespaceKey(key).getItemstack();
     }
 }
