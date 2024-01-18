@@ -42,7 +42,7 @@ public final class CustomItemApi extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CustomBlockEvents(), this);
         getServer().getPluginManager().registerEvents(new CustomItemEvents(), this);
 
-        /*CustomBlock customBlock = new TransparentCustomBlock(Material.FURNACE, new NamespacedKey(plugin, "Test"), new actionTest().getClass(), Material.GLASS)
+        CustomBlock customBlock = new TransparentCustomBlock(Material.FURNACE, new NamespacedKey(plugin, "Test"), new actionTest().getClass(), Material.GLASS)
                 .setRotation(CustomBlock.Rotation.AROUND_Y).setDropItem(new NamespacedKey(plugin, "Test"));
 
         CustomItem customItem = new CustomItem(Material.FURNACE, new NamespacedKey(plugin, "Test"), new CustomItemActions() {
@@ -51,7 +51,7 @@ public final class CustomItemApi extends JavaPlugin {
                 e.getPlayer().sendMessage(Component.text("Placed"));
             }
         })
-                .setCustomBlock(new NamespacedKey(plugin, "Test")).setName(Component.text("Beautiful Furnace"));*/
+                .setCustomBlock(new NamespacedKey(plugin, "Test")).setName(Component.text("Beautiful Furnace"));
     }
 
     @Override

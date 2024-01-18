@@ -1,5 +1,8 @@
 package org.super_man2006.custom_item_api.CustomItems.blocks;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -17,9 +20,11 @@ import org.super_man2006.custom_item_api.Coordinates.Coordinates;
 import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
+import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TransparentCustomBlock extends CustomBlock {
@@ -34,6 +39,30 @@ public class TransparentCustomBlock extends CustomBlock {
         super(material, key, actions);
 
         instances.put(key, this);
+    }
+
+
+    public static void fromJson(String json, NamespacedKey key) throws ClassNotFoundException {
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+
+        Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
+        int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
+        boolean cmdBoolean = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("use_cmd").getAsBoolean();
+        Material placedBlock = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("placement").getAsJsonObject().get("placed_block").getAsString())).getType();
+        Rotation rotation = Rotation.valueOf(jsonObject.get("placement").getAsJsonObject().get("rotation").getAsString());
+        HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);
+        Class actions = Class.forName(jsonObject.get("actions_class").getAsString());
+        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("drop").getAsString());
+
+        TransparentCustomBlock customBlock = new TransparentCustomBlock(material, key, actions, placedBlock);
+        customBlock.setCmd(cmd);
+        customBlock.setCmdBoolean(cmdBoolean);
+        customBlock.setCommands(commands);
+        customBlock.setCustomItem(drop);
+        customBlock.setRotation(rotation);
+
+        instances.put(key, customBlock);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package org.super_man2006.custom_item_api.CustomItems.blocks;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,6 +19,7 @@ import org.super_man2006.custom_item_api.Coordinates.Coordinates;
 import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
+import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 
 import java.util.*;
@@ -34,6 +38,7 @@ public class CustomBlock {
     private Material placedBlock; //
     private Class actions;
 
+    private HashMap<String, String> commands = new HashMap<>();
 
     public CustomBlock(Material material, NamespacedKey key, Class actions, Material placedBlock) {
         if (instances.containsKey(key)) {
@@ -50,6 +55,9 @@ public class CustomBlock {
         cmdBoolean = false;
         customItem = null;
         rotation = Rotation.ALL_BLOCKFACE;
+        commands.put("break", "");
+        commands.put("place", "");
+        commands.put("click", "");
 
         instances.put(key, this);
     }
@@ -69,8 +77,62 @@ public class CustomBlock {
         cmdBoolean = false;
         customItem = null;
         rotation = Rotation.ALL_BLOCKFACE;
+        commands.put("break", "");
+        commands.put("place", "");
+        commands.put("click", "");
 
         instances.put(key, this);
+    }
+
+    public static void fromJson(String json, NamespacedKey key) throws ClassNotFoundException {
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+
+        Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
+        int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
+        boolean cmdBoolean = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("use_cmd").getAsBoolean();
+        Material placedBlock = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("placement").getAsJsonObject().get("placed_block").getAsString())).getType();
+        Rotation rotation = Rotation.valueOf(jsonObject.get("placement").getAsJsonObject().get("rotation").getAsString());
+        HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);
+        Class actions = Class.forName(jsonObject.get("actions_class").getAsString());
+        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("drop").getAsString());
+
+        CustomBlock customBlock = new CustomBlock(material, key, actions, placedBlock);
+        customBlock.setCmd(cmd);
+        customBlock.setCmdBoolean(cmdBoolean);
+        customBlock.setCommands(commands);
+        customBlock.setCustomItem(drop);
+        customBlock.setRotation(rotation);
+
+        instances.put(key, customBlock);
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public void setCmd(int cmd) {
+        this.cmd = cmd;
+    }
+
+    public void setCmdBoolean(boolean cmdBoolean) {
+        this.cmdBoolean = cmdBoolean;
+    }
+
+    public void setCustomItem(NamespacedKey customItem) {
+        this.customItem = customItem;
+    }
+
+    public void setKey(NamespacedKey key) {
+        this.key = key;
+    }
+
+    public HashMap<String, String> getCommands() {
+        return commands;
+    }
+
+    public void setCommands(HashMap<String, String> commands) {
+        this.commands = commands;
     }
 
     public static CustomBlock fromNamespacedKey(NamespacedKey key) {
@@ -496,7 +558,7 @@ public class CustomBlock {
 
     public enum Rotation {
         ALL_BLOCKFACE,
-        AROUND_Y,
+        AROUND_Y;
         //ALL_LOOKING
     }
 }
