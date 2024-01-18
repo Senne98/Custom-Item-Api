@@ -41,6 +41,8 @@ public class CustomBlockEvents implements Listener {
                 }
             }
         });
+
+        e.getPlayer().performCommand(customBlock.getCommands().get("click"));
     }
 
     @EventHandler
@@ -57,7 +59,7 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        //CustomBlock.instances.get(customBlock.getKey()).getActions().Break(e);
+        e.getPlayer().performCommand(customBlock.getCommands().get("break"));
     }
 
     @EventHandler
@@ -74,6 +76,6 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        //CustomBlock.instances.get(customBlock.getKey()).getActions().Place(e);
+        e.getPlayer().performCommand(customBlock.getCommands().get("place"));
     }
 }
