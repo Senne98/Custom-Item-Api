@@ -57,6 +57,7 @@ public class CustomApiTabComplete implements TabCompleter {
                     returnList.add("filestructure");
                     returnList.add("blockjson");
                     returnList.add("itemjson");
+                    returnList.add("ask");
                     List<String> finalReturnList = new ArrayList<>();
                     returnList.forEach(s -> {
                         if (s.startsWith(args[1])) {

@@ -84,7 +84,7 @@ public class CustomApiCommands implements CommandExecutor {
                 sender.sendMessage(Component.text(" \u25CF ").append(Component.text("block.json").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/customapi help blockjson")));
                 sender.sendMessage(Component.text(" \u25CF ").append(Component.text("item.json").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/customapi help itemjson")));
                 sender.sendMessage(Component.text(" \u25CF ").append(Component.text("permissions").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/customapi help permissions")));
-
+                sender.sendMessage(Component.text(" \u25CF ").append(Component.text("ask question/... on github or discord").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/customapi help ask")));
 
                 return true;
             }
@@ -142,6 +142,13 @@ public class CustomApiCommands implements CommandExecutor {
                     sender.sendMessage(Component.text(" usage: ").append(Component.text("/customapi permission [give/remove] <player> <permission>")).color(NamedTextColor.RED));
                     sender.sendMessage(Component.text(" op: ").append(Component.text("gives access to all Custom_Item_API commands")).color(NamedTextColor.RED));
                     sender.sendMessage(Component.text(" givecmd: ").append(Component.text("gives access to the give command (/customapi give)")).color(NamedTextColor.RED));
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("ask")) {
+                    sender.sendMessage(Component.text("====== github/discord ======").color(NamedTextColor.DARK_AQUA));
+                    sender.sendMessage(Component.text(" \u25CF ").append(Component.text("GitHub").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Senne98/Custom-Item-Api")));
+                    sender.sendMessage(Component.text(" \u25CF ").append(Component.text("Discord").decoration(TextDecoration.UNDERLINED, true)).color(NamedTextColor.RED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/DBabnRZAhC")));
                     return true;
                 }
             }

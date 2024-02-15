@@ -6,3 +6,6 @@ author: Super_Man2006
 commands:
   CustomApi:
     usage: /CustomApi
+    aliases:
+      - "customitemapi"
+      - "cia"
