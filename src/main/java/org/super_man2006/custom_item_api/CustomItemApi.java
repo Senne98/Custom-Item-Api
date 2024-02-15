@@ -9,7 +9,6 @@ import org.super_man2006.custom_item_api.CustomItems.blocks.*;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemActions;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemEvents;
-import org.super_man2006.custom_item_api.commands.Give;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiCommands;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiTabComplete;
 import org.super_man2006.custom_item_api.events.CustomItemInteractEvent;
@@ -39,7 +38,6 @@ public final class CustomItemApi extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlaceBlock(), this);
         getServer().getPluginManager().registerEvents(new BreakBlock(), this);
         getServer().getPluginManager().registerEvents(new LightUpdate(), this);
-        getServer().getPluginManager().registerEvents(new Give(), this);
         getServer().getPluginManager().registerEvents(new PistonMove(), this);
         getServer().getPluginManager().registerEvents(new CustomBlockEvents(), this);
         getServer().getPluginManager().registerEvents(new CustomItemEvents(), this);

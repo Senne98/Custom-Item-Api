@@ -1,4 +1,4 @@
-package org.super_man2006.custom_item_api.CustomItems.blocks.loadsave.load;
+package org.super_man2006.custom_item_api.CustomItems.load;
 
 import org.bukkit.NamespacedKey;
 import org.super_man2006.custom_item_api.CustomItemApi;

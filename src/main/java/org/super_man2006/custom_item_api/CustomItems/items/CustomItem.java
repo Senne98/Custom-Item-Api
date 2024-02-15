@@ -1,5 +1,8 @@
 package org.super_man2006.custom_item_api.CustomItems.items;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -8,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
+import org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock;
 
 import java.util.*;
 
@@ -37,9 +41,10 @@ public class CustomItem {
     NamespacedKey key;
     List<Component> lore;
     NamespacedKey customBlock;
-    CustomItemActions actions;
+    Class actions;
+    HashMap<String, String> commands = new HashMap<>();
 
-    public CustomItem(Material material, NamespacedKey key, CustomItemActions actions) {
+    public CustomItem(Material material, NamespacedKey key, Class actions) {
         this.actions = actions;
         this.material = material;
         nameBoolean = false;
@@ -48,6 +53,101 @@ public class CustomItem {
         this.key = key;
 
         instances.put(key, this);
+    }
+
+    public HashMap<String, String> getCommands() {
+        return commands;
+    }
+
+    public void setCommands(HashMap<String, String> commands) {
+        this.commands = commands;
+    }
+
+    public static void fromJson(String json, NamespacedKey key) throws ClassNotFoundException {
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+
+        HashMap<String, Integer> intTags;
+        HashMap<String, Boolean> booleanTags;
+        HashMap<String, Byte> byteTags;
+        HashMap<String, byte[]> byteArrayTags;
+        HashMap<String, Double> doubleTags;
+        HashMap<String, Float> floatTags;
+        HashMap<String, int[]> intArrayTags;
+        HashMap<String, Long> longTags;
+        HashMap<String, long[]> longArrayTags;
+        HashMap<String, Short> shortTags;
+        HashMap<String, String> stringTags;
+
+        boolean nameBoolean;
+        Component name;
+        if (jsonObject.has("name")) {
+            name = Component.text(jsonObject.get("name").getAsString());
+            nameBoolean = true;
+        } else {
+            name = Component.text("");
+            nameBoolean = false;
+        }
+
+        boolean loreBoolean;
+        List<Component> lore;
+        if (jsonObject.has("lore")) {
+            lore = new ArrayList<>();
+            jsonObject.get("lore").getAsJsonArray().forEach((element) -> {
+                lore.add(Component.text(element.getAsString()));
+            });
+            loreBoolean = true;
+        } else {
+            lore = new ArrayList<>();
+            loreBoolean = false;
+        }
+
+        intTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("int"), HashMap.class);
+        booleanTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("boolean"), HashMap.class);
+        byteTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("byte"), HashMap.class);
+        byteArrayTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("byte_array"), HashMap.class);
+        doubleTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("double"), HashMap.class);
+        floatTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("float"), HashMap.class);
+        intArrayTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("int_array"), HashMap.class);
+        longTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("long"), HashMap.class);
+        longArrayTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("long_array"), HashMap.class);
+        shortTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("short"), HashMap.class);
+        stringTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("string"), HashMap.class);
+
+        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("place_block").getAsString());
+
+        Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
+        int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
+        boolean cmdBoolean = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("use_cmd").getAsBoolean();
+        HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);
+        Class actions = Class.forName(jsonObject.get("actions_class").getAsString());
+
+        CustomItem customItem = new CustomItem(material, key, actions);
+        if (nameBoolean) {
+            customItem.setName(name);
+        }
+        if (loreBoolean) {
+            customItem.setLore(lore);
+        }
+        if (cmdBoolean) {
+            customItem.setCMD(cmd);
+        }
+
+        customItem.setCommands(commands);
+        customItem.setCustomBlock(drop);
+        intTags.forEach((k, v) -> customItem.addIntTag(k, v));
+        booleanTags.forEach((k, v) -> customItem.addBooleanTag(k, v));
+        byteTags.forEach((k, v) -> customItem.addByteTag(k, v));
+        byteArrayTags.forEach((k, v) -> customItem.addByteArrayTag(k, v));
+        doubleTags.forEach((k, v) -> customItem.addDoubleTag(k, v));
+        floatTags.forEach((k, v) -> customItem.addFloatTag(k, v));
+        intArrayTags.forEach((k, v) -> customItem.addIntArrayTag(k, v));
+        longTags.forEach((k, v) -> customItem.addLongTag(k, v));
+        longArrayTags.forEach((k, v) -> customItem.addLongArrayTag(k, v));
+        shortTags.forEach((k, v) -> customItem.addShortTag(k, v));
+        stringTags.forEach((k, v) -> customItem.addStringTag(k, v));
+
+        instances.put(key, customItem);
     }
 
     public static CustomItem fromNamespaceKey(NamespacedKey key) {
@@ -90,11 +190,11 @@ public class CustomItem {
         return itemStack;
     }
 
-    public CustomItemActions getActions() {
+    public Class getActions() {
         return actions;
     }
 
-    public CustomItem setActions(CustomItemActions actions) {
+    public CustomItem setActions(Class actions) {
         this.actions = actions;
         return this;
     }
