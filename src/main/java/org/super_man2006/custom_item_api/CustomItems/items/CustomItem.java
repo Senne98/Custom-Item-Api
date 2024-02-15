@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -82,7 +83,7 @@ public class CustomItem {
         boolean nameBoolean;
         Component name;
         if (jsonObject.has("name")) {
-            name = Component.text(jsonObject.get("name").getAsString());
+            name = MiniMessage.miniMessage().deserialize(jsonObject.get("name").getAsString());
             nameBoolean = true;
         } else {
             name = Component.text("");
@@ -94,7 +95,7 @@ public class CustomItem {
         if (jsonObject.has("lore")) {
             lore = new ArrayList<>();
             jsonObject.get("lore").getAsJsonArray().forEach((element) -> {
-                lore.add(Component.text(element.getAsString()));
+                lore.add(MiniMessage.miniMessage().deserialize(element.getAsString()));
             });
             loreBoolean = true;
         } else {
