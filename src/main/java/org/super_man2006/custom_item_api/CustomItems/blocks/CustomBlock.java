@@ -95,7 +95,7 @@ public class CustomBlock {
         Rotation rotation = Rotation.valueOf(jsonObject.get("placement").getAsJsonObject().get("rotation").getAsString());
         HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);
         Class actions = Class.forName(jsonObject.get("actions_class").getAsString());
-        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("drop").getAsString());
+        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("drop").getAsString().toLowerCase());
 
         CustomBlock customBlock = new CustomBlock(material, key, actions, placedBlock);
         customBlock.setCmd(cmd);

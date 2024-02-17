@@ -115,7 +115,7 @@ public class CustomItem {
         shortTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("short"), HashMap.class);
         stringTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("string"), HashMap.class);
 
-        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("place_block").getAsString());
+        NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("place_block").getAsString().toLowerCase());
 
         Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
         int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
@@ -136,17 +136,40 @@ public class CustomItem {
 
         customItem.setCommands(commands);
         customItem.setCustomBlock(drop);
-        intTags.forEach((k, v) -> customItem.addIntTag(k, v));
-        booleanTags.forEach((k, v) -> customItem.addBooleanTag(k, v));
-        byteTags.forEach((k, v) -> customItem.addByteTag(k, v));
-        byteArrayTags.forEach((k, v) -> customItem.addByteArrayTag(k, v));
-        doubleTags.forEach((k, v) -> customItem.addDoubleTag(k, v));
-        floatTags.forEach((k, v) -> customItem.addFloatTag(k, v));
-        intArrayTags.forEach((k, v) -> customItem.addIntArrayTag(k, v));
-        longTags.forEach((k, v) -> customItem.addLongTag(k, v));
-        longArrayTags.forEach((k, v) -> customItem.addLongArrayTag(k, v));
-        shortTags.forEach((k, v) -> customItem.addShortTag(k, v));
-        stringTags.forEach((k, v) -> customItem.addStringTag(k, v));
+
+        if (intTags != null) {
+            intTags.forEach((k, v) -> customItem.addIntTag(k, v));
+        }
+        if (booleanTags != null) {
+            booleanTags.forEach((k, v) -> customItem.addBooleanTag(k, v));
+        }
+        if (byteTags != null) {
+            byteTags.forEach((k, v) -> customItem.addByteTag(k, v));
+        }
+        if (byteArrayTags != null) {
+            byteArrayTags.forEach((k, v) -> customItem.addByteArrayTag(k, v));
+        }
+        if (doubleTags != null) {
+            doubleTags.forEach((k, v) -> customItem.addDoubleTag(k, v));
+        }
+        if (floatTags != null) {
+            floatTags.forEach((k, v) -> customItem.addFloatTag(k, v));
+        }
+        if (intArrayTags != null) {
+            intArrayTags.forEach((k, v) -> customItem.addIntArrayTag(k, v));
+        }
+        if (longTags != null) {
+            longTags.forEach((k, v) -> customItem.addLongTag(k, v));
+        }
+        if (longArrayTags != null) {
+            longArrayTags.forEach((k, v) -> customItem.addLongArrayTag(k, v));
+        }
+        if (shortTags != null) {
+            shortTags.forEach((k, v) -> customItem.addShortTag(k, v));
+        }
+        if (stringTags != null) {
+            stringTags.forEach((k, v) -> customItem.addStringTag(k, v));
+        }
 
         instances.put(key, customItem);
     }

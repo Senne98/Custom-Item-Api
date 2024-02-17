@@ -34,7 +34,7 @@ public class CustomItemEvents implements Listener {
         Arrays.stream(methods).forEach(method -> {
             if (method.getName().equals("Click")) {
                 try {
-                    method.invoke(CustomBlock.instances.get(customItem.getKey()).getActions().getConstructor().newInstance(), e);
+                    method.invoke(CustomItem.instances.get(customItem.getKey()).getActions().getConstructor().newInstance(), e);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

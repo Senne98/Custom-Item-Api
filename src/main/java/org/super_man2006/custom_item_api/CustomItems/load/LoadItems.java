@@ -12,9 +12,9 @@ import java.nio.file.Files;
 
 public class LoadItems {
 
-    File packFolder = new File(CustomItemApi.plugin.getDataFolder(), "packs");
+    static File packFolder = new File(CustomItemApi.plugin.getDataFolder(), "packs");
 
-    public void load() throws IOException, ClassNotFoundException {
+    public static void load() throws IOException, ClassNotFoundException {
         if (packFolder.exists()) {
 
             for (File namespaceFolder : packFolder.listFiles()) {
@@ -27,7 +27,9 @@ public class LoadItems {
                             //load default block files
                             for (File itemFiles : itemFolder.listFiles()) {
                                 if (itemFiles.getName().endsWith(".json") && itemFiles.isFile()) {
-                                    loadItem(itemFiles, NamespacedKey.fromString(namespaceFolder.getName() + ":" + itemFiles.getName().replace(".json", "")));
+                                    System.out.println("Loading item: " + namespaceFolder.getName() + ":" + itemFiles.getName().replace(".json", ""));
+                                    System.out.println(NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + itemFiles.getName().replace(".json", "").toLowerCase()).toString());
+                                    loadItem(itemFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + itemFiles.getName().replace(".json", "").toLowerCase()));
                                 }
                             }
                         }

@@ -9,11 +9,14 @@ import org.super_man2006.custom_item_api.CustomItems.blocks.*;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemActions;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemEvents;
+import org.super_man2006.custom_item_api.CustomItems.load.LoadBlocks;
+import org.super_man2006.custom_item_api.CustomItems.load.LoadItems;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiCommands;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiTabComplete;
 import org.super_man2006.custom_item_api.events.CustomItemInteractEvent;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class CustomItemApi extends JavaPlugin {
     public static String locationKey = "locationkey";
@@ -34,6 +37,22 @@ public final class CustomItemApi extends JavaPlugin {
         int pluginId = 19559; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
 
+        //packs
+        File packFolder = new File(getDataFolder(), "packs");
+        if (!packFolder.exists()) {
+            packFolder.mkdirs();
+        }
+
+        try {
+            LoadBlocks.load();
+            LoadItems.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
         //Events
         getServer().getPluginManager().registerEvents(new PlaceBlock(), this);
         getServer().getPluginManager().registerEvents(new BreakBlock(), this);
@@ -53,7 +72,7 @@ public final class CustomItemApi extends JavaPlugin {
         //TabComplete
         getCommand("CustomApi").setTabCompleter(new CustomApiTabComplete());
 
-        CustomBlock customBlock = new TransparentCustomBlock(Material.FURNACE, new NamespacedKey(plugin, "Test"), new actionTest().getClass(), Material.GLASS)
+        /*CustomBlock customBlock = new TransparentCustomBlock(Material.FURNACE, new NamespacedKey(plugin, "Test"), new actionTest().getClass(), Material.GLASS)
                 .setRotation(CustomBlock.Rotation.AROUND_Y).setDropItem(new NamespacedKey(plugin, "Test"));
 
         CustomItem customItem = new CustomItem(Material.FURNACE, new NamespacedKey(plugin, "Test"), new CustomItemActions() {
@@ -62,7 +81,7 @@ public final class CustomItemApi extends JavaPlugin {
                 e.getPlayer().sendMessage(Component.text("Placed"));
             }
         })
-                .setCustomBlock(new NamespacedKey(plugin, "Test")).setName(Component.text("Beautiful Furnace"));
+                .setCustomBlock(new NamespacedKey(plugin, "Test")).setName(Component.text("Beautiful Furnace"));*/
     }
 
     @Override

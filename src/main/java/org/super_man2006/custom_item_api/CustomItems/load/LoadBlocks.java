@@ -11,9 +11,9 @@ import java.nio.file.Files;
 
 public class LoadBlocks {
 
-    File packFolder = new File(CustomItemApi.plugin.getDataFolder(), "packs");
+    static File packFolder = new File(CustomItemApi.plugin.getDataFolder(), "packs");
 
-    public void load() throws IOException, ClassNotFoundException {
+    public static void load() throws IOException, ClassNotFoundException {
         if (packFolder.exists()) {
 
             for (File namespaceFolder : packFolder.listFiles()) {
@@ -32,7 +32,9 @@ public class LoadBlocks {
                                     //load default block files
                                     for (File blockFiles : subBlockFolder.listFiles()) {
                                         if (blockFiles.getName().endsWith(".json") && blockFiles.isFile()) {
-                                            loadDefaultBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName() + ":" + blockFiles.getName().replace(".json", "")));
+                                            System.out.println("Loading block: " + namespaceFolder.getName() + ":" + blockFiles.getName().replace(".json", ""));
+                                            System.out.println(NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()).toString());
+                                            loadDefaultBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()));
                                         }
                                     }
 
@@ -43,7 +45,7 @@ public class LoadBlocks {
                                     //load transparent block files
                                     for (File blockFiles : subBlockFolder.listFiles()) {
                                         if (blockFiles.getName().endsWith(".json") && blockFiles.isFile()) {
-                                            loadTransparentBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName() + ":" + blockFiles.getName().replace(".json", "")));
+                                            loadTransparentBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()));
                                         }
                                     }
                                 }
