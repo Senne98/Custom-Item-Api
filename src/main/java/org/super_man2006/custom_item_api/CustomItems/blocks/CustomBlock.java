@@ -88,9 +88,17 @@ public class CustomBlock {
         Gson gson = new Gson();
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
 
+        boolean cmdBoolean;
+        int cmd;
+        if (jsonObject.get("texture").getAsJsonObject().has("cmd")) {
+            cmdBoolean = true;
+            cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsInt();
+        } else {
+            cmdBoolean = false;
+            cmd = 0;
+        }
+
         Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
-        int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
-        boolean cmdBoolean = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("use_cmd").getAsBoolean();
         Material placedBlock = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("placement").getAsJsonObject().get("placed_block").getAsString())).getType();
         Rotation rotation = Rotation.valueOf(jsonObject.get("placement").getAsJsonObject().get("rotation").getAsString());
         HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);

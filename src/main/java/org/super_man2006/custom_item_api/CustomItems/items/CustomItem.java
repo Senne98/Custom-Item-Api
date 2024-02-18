@@ -103,6 +103,16 @@ public class CustomItem {
             loreBoolean = false;
         }
 
+        boolean cmdBoolean;
+        int cmd;
+        if (jsonObject.get("texture").getAsJsonObject().has("cmd")) {
+            cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsInt();
+            cmdBoolean = true;
+        } else {
+            cmd = 0;
+            cmdBoolean = false;
+        }
+
         intTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("int"), HashMap.class);
         booleanTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("boolean"), HashMap.class);
         byteTags = gson.fromJson(jsonObject.get("tags").getAsJsonObject().get("byte"), HashMap.class);
@@ -118,8 +128,6 @@ public class CustomItem {
         NamespacedKey drop = NamespacedKey.fromString(jsonObject.get("place_block").getAsString().toLowerCase());
 
         Material material = CustomItem.getItemStack(NamespacedKey.fromString(jsonObject.get("texture").getAsJsonObject().get("material").getAsString())).getType();
-        int cmd = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("cmd").getAsInt();
-        boolean cmdBoolean = jsonObject.get("texture").getAsJsonObject().get("cmd").getAsJsonObject().get("use_cmd").getAsBoolean();
         HashMap<String, String> commands = gson.fromJson(jsonObject.get("commands").getAsJsonObject(), HashMap.class);
         Class actions = Class.forName(jsonObject.get("actions_class").getAsString());
 
