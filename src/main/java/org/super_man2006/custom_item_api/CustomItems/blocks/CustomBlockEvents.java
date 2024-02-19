@@ -30,6 +30,8 @@ public class CustomBlockEvents implements Listener {
 
     @EventHandler
     public void onInteract(CustomBlockInteractEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(e.getBlock()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
@@ -49,6 +51,8 @@ public class CustomBlockEvents implements Listener {
 
     @EventHandler
     public void onBreak(CustomBlockBreakEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(customBlock.getKey()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
@@ -68,6 +72,8 @@ public class CustomBlockEvents implements Listener {
 
     @EventHandler
     public void onPlace(CustomBlockPlaceEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(customBlock.getKey()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {

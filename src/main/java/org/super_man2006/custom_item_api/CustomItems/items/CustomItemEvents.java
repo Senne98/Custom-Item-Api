@@ -29,6 +29,8 @@ public class CustomItemEvents implements Listener {
 
     @EventHandler
     public void onInteract(CustomItemInteractEvent e) {
+        if (!CustomItem.instances.containsKey(e.getItem())) return;
+
         CustomItem customItem = CustomItem.fromNamespaceKey(e.getItem());
         Method[] methods = CustomItem.instances.get(customItem.getKey()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
