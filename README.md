@@ -26,31 +26,60 @@ An API for making custom blocks and items for 1.20+ on paperMC
 
 ## How to use?
 
-### Custom items
-You can add a custom item by creating a ```new CustomItem(Material, NamespacedKey)```.
-This will create the custom item if there isn't a custom item with this NamespacedKey.
+### Data driven blocks and items
+
+#### Create a 'pack'
+To create custom items and blocks in this way, you will have to create a 'pack' similar to a datapack or a resource pack. The file structure of which looks like this:
+```
+- <namespace>
+   - blocks
+      - default_block
+      - transparent_block
+   - items
+```
+The namespace of your pack will be what shows before the item id in the give command ```namespace:item_id```.
+
+##### Add items
+To add an item you just need to create a [json](https://github.com/Senne98/Custom-Item-Api/wiki/item-json) and put it in the items folder. The name of the file will become the item id.
+
+##### Add blocks
+To add a block you need to create a [json](https://github.com/Senne98/Custom-Item-Api/wiki/block-json). If you want it to be a transparent block, you need to put it in the transparent_block folder. It is recommended to use a block that is transparent as the placed_block, otherwise it might look weird. If you want a normal block you put the json in the default_block folder. The name of the file will become the block id, for good practice you should make this id the same as the id of its item but it's not required.
+
+#### Use a 'pack'
+To use a 'pack' you need to put it in the packs folder, this can be found by going in the plugins folder and then the custom_item_api folder.
+```
+- plugins
+   - Custom_Item_Api
+	- packs
+```
+
+### Add blocks and items with a plugin
+
+#### Custom items
+You can add a custom item by creating a ```new CustomItem(Material material, NamespacedKey key, Class actions)```.
+This will create the custom item if there isn't a custom item with this NamespacedKey. The actions define what should happen when the item is clicked, it's a class that implements ```CustomItemActions```. 
 You can change the texture,tags,...
 If you want to place a custom block using this item you can add this with CustomItem#setCustomBlock(NamespacedKey)
 
 example:
 ````java
-NamespacedKey itemKey = new NamespacedKey(plugin, "Test");
-CustomItem customItem = new CustomItem(Material.FURNACE, itemKey);
+NamespacedKey itemKey = new NamespacedKey(plugin, "example_item");
+CustomItem customItem = new CustomItem(Material.FURNACE, itemKey, Class.forName("org.super_man2006.custom_item_api.utils.blocks.EmptyCustomItemAction"));
 customItem.setCustomBlock(blockKey);
-customItem.setName(Component.text("Beautiful Furnace"));
+customItem.setName(Component.text("Example"));
 ``````
 
-### Custom blocks
-You can add a custom item by creating a ```new CustomBlock(Material, NamespacedKey)```.
-This will create the custom item if there isn't a custom item with this NamespacedKey.
+#### Custom blocks
+You can add a custom item by creating a ```new CustomBlock(Material material, NamespacedKey key, Class actions, Material placedBlock)```.
+This will create the custom item if there isn't a custom item with this NamespacedKey. The actions define what should happen when the block is placed/broken/clicked on, it's a class that implements ```CustomBlockActions```. 
 You can change the texture,tags,...
 The block uses an item texture, NOT a block texture. This means that if you set custom model data (cmd) you can change the texture.
 If you want to drop a custom item after breaking this block you made with CustomBlock#setDropItem(NamespacedKey)
 
 example:
 ````java
-NamespacedKey blockKey = new NamespacedKey(plugin, "Test");
-CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey);
+NamespacedKey blockKey = new NamespacedKey(plugin, "example_block");
+CustomBlock customBlock = new CustomBlock(Material.FURNACE, blockKey, Class.forName("org.super_man2006.custom_item_api.utils.blocks.EmptyCustomBlockAction"), Material.STONE);
 customBlock.setRotation(CustomBlock.Rotation.AROUND_Y);
 ``````
 
