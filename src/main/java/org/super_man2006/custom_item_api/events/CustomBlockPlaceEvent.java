@@ -18,7 +18,6 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
     protected boolean cancel;
     protected boolean canBuild;
     protected Block placedAgainst;
-    protected BlockState replacedBlockState;
     protected ItemStack itemInHand;
     protected Player player;
     protected EquipmentSlot hand;
@@ -29,7 +28,6 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
         placedAgainst = e.getBlockAgainst();
         this.block = block;
         canBuild = e.canBuild();
-        replacedBlockState = e.getBlockReplacedState();
         hand = e.getHand();
         itemInHand = e.getItemInHand();
         player = e.getPlayer();
@@ -67,14 +65,6 @@ public class CustomBlockPlaceEvent extends Event implements Cancellable {
 
     public void setPlacedAgainst(Block placedAgainst) {
         this.placedAgainst = placedAgainst;
-    }
-
-    public BlockState getReplacedBlockState() {
-        return replacedBlockState;
-    }
-
-    public void setReplacedBlockState(BlockState replacedBlockState) {
-        this.replacedBlockState = replacedBlockState;
     }
 
     public ItemStack getItemInHand() {

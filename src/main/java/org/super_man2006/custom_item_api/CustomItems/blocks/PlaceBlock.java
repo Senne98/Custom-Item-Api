@@ -1,17 +1,18 @@
 package org.super_man2006.custom_item_api.CustomItems.blocks;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
+import org.super_man2006.custom_item_api.events.CustomBlockBreakEvent;
+import org.super_man2006.custom_item_api.events.CustomBlockPlaceEvent;
 
 import java.util.Collection;
 
@@ -57,6 +58,15 @@ public class PlaceBlock implements Listener {
             return;
         }
 
+        NamespacedKey cBlock = customItem.getCBlock();
+        CustomBlock customBlock = CustomBlock.fromNamespacedKey(cBlock);
+
+        World world = location.getWorld();
+        CustomBlockPlaceEvent event = new CustomBlockPlaceEvent(new BlockPlaceEvent(world.getBlockAt(location), world.getBlockAt(location).getState(), e.getClickedBlock(), e.getItem(), e.getPlayer(), false, e.getHand()), customItem.getCBlock());
+        if (!event.callEvent()) {
+            return;
+        }
+
         boolean overlap;
         overlap = entities.stream().anyMatch(livingEntity -> {
 
@@ -76,9 +86,6 @@ public class PlaceBlock implements Listener {
             usedItem.setAmount(e.getPlayer().getInventory().getItem(e.getHand()).getAmount() - 1);
             e.getPlayer().getInventory().setItem(e.getHand(), usedItem);
         }
-
-        NamespacedKey cBlock = customItem.getCBlock();
-        CustomBlock customBlock = CustomBlock.fromNamespacedKey(cBlock);
 
         customBlock.place(location, e.getBlockFace(), e.getPlayer());
 
