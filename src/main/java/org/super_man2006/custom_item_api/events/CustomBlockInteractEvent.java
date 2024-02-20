@@ -12,6 +12,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * CustomBlockInteractEvent
+ * Can sometimes be called twice!!!
+ */
 public class CustomBlockInteractEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();

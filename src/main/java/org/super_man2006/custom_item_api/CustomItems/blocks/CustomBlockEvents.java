@@ -30,6 +30,8 @@ public class CustomBlockEvents implements Listener {
 
     @EventHandler
     public void onInteract(CustomBlockInteractEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(e.getBlock()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
@@ -41,10 +43,16 @@ public class CustomBlockEvents implements Listener {
                 }
             }
         });
+
+        if (customBlock.getCommands().get("click") != null && !customBlock.getCommands().get("click").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("click"));
+        }
     }
 
     @EventHandler
     public void onBreak(CustomBlockBreakEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(customBlock.getKey()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
@@ -57,11 +65,15 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        //CustomBlock.instances.get(customBlock.getKey()).getActions().Break(e);
+        if (customBlock.getCommands().get("break") != null && !customBlock.getCommands().get("break").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("break"));
+        }
     }
 
     @EventHandler
     public void onPlace(CustomBlockPlaceEvent e) {
+        if (!CustomBlock.instances.containsKey(e.getBlock())) return;
+
         CustomBlock customBlock = CustomBlock.fromNamespacedKey(e.getBlock());
         Method[] methods = CustomBlock.instances.get(customBlock.getKey()).getActions().getMethods();
         Arrays.stream(methods).forEach(method -> {
@@ -74,6 +86,8 @@ public class CustomBlockEvents implements Listener {
             }
         });
 
-        //CustomBlock.instances.get(customBlock.getKey()).getActions().Place(e);
+        if (customBlock.getCommands().get("place") != null && !customBlock.getCommands().get("place").equals("")) {
+            e.getPlayer().performCommand(customBlock.getCommands().get("place"));
+        }
     }
 }

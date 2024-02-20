@@ -2,3 +2,10 @@ name: Custom_Item_Api
 version: '${version}'
 main: org.super_man2006.custom_item_api.CustomItemApi
 api-version: '1.20'
+author: Super_Man2006
+commands:
+  CustomApi:
+    usage: /CustomApi
+    aliases:
+      - "customitemapi"
+      - "cia"
