@@ -27,8 +27,7 @@ public class LoadItems {
                             //load default block files
                             for (File itemFiles : itemFolder.listFiles()) {
                                 if (itemFiles.getName().endsWith(".json") && itemFiles.isFile()) {
-                                    System.out.println("Loading item: " + namespaceFolder.getName() + ":" + itemFiles.getName().replace(".json", ""));
-                                    System.out.println(NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + itemFiles.getName().replace(".json", "").toLowerCase()).toString());
+                                    CustomItemApi.plugin.getLogger().info("Loading item: " + namespaceFolder.getName().toLowerCase() + ":" + itemFiles.getName().replace(".json", "").toLowerCase());
                                     loadItem(itemFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + itemFiles.getName().replace(".json", "").toLowerCase()));
                                 }
                             }

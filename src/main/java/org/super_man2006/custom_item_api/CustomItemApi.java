@@ -52,6 +52,9 @@ public final class CustomItemApi extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
+        //VersionCheck
+        new VersionCheck();
+
 
         //Events
         getServer().getPluginManager().registerEvents(new PlaceBlock(), this);

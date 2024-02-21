@@ -32,8 +32,7 @@ public class LoadBlocks {
                                     //load default block files
                                     for (File blockFiles : subBlockFolder.listFiles()) {
                                         if (blockFiles.getName().endsWith(".json") && blockFiles.isFile()) {
-                                            System.out.println("Loading block: " + namespaceFolder.getName() + ":" + blockFiles.getName().replace(".json", ""));
-                                            System.out.println(NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()).toString());
+                                            CustomItemApi.plugin.getLogger().info("Loading block: " + namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase());
                                             loadDefaultBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()));
                                         }
                                     }
@@ -45,6 +44,7 @@ public class LoadBlocks {
                                     //load transparent block files
                                     for (File blockFiles : subBlockFolder.listFiles()) {
                                         if (blockFiles.getName().endsWith(".json") && blockFiles.isFile()) {
+                                            CustomItemApi.plugin.getLogger().info("Loading transparent block: " + namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase());
                                             loadTransparentBlock(blockFiles, NamespacedKey.fromString(namespaceFolder.getName().toLowerCase() + ":" + blockFiles.getName().replace(".json", "").toLowerCase()));
                                         }
                                     }
