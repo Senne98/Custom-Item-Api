@@ -1,19 +1,16 @@
 package org.super_man2006.custom_item_api;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.super_man2006.custom_item_api.CustomItems.blocks.*;
-import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
-import org.super_man2006.custom_item_api.CustomItems.items.CustomItemActions;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItemEvents;
 import org.super_man2006.custom_item_api.CustomItems.load.LoadBlocks;
 import org.super_man2006.custom_item_api.CustomItems.load.LoadItems;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiCommands;
 import org.super_man2006.custom_item_api.commands.customApi.CustomApiTabComplete;
-import org.super_man2006.custom_item_api.events.CustomItemInteractEvent;
+import org.super_man2006.custom_item_api.permissions.Permissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +33,12 @@ public final class CustomItemApi extends JavaPlugin {
         //bStats
         int pluginId = 19559; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
+
+        //data
+        File dataFolder = new File(getDataFolder(), "data");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
 
         //packs
         File packFolder = new File(getDataFolder(), "packs");
@@ -68,6 +71,13 @@ public final class CustomItemApi extends JavaPlugin {
         //Permissions
         getServer().getPluginManager().addPermission(Permissions.getCustomApiOp());
         getServer().getPluginManager().addPermission(Permissions.getCustomApiGiveCmd());
+        File permissionsFile = new File(getDataFolder(), "data/permissions.json");
+        if (!permissionsFile.exists()) {
+            saveResource("data/permissions.json", false);
+        }
+        Permissions.load();
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.runTaskTimer(this, () -> Permissions.save(), 20L * 20L, 20L * 60L * 5L);
 
         //Commands
         getCommand("CustomApi").setExecutor(new CustomApiCommands());
@@ -90,5 +100,6 @@ public final class CustomItemApi extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        Permissions.save();
     }
 }

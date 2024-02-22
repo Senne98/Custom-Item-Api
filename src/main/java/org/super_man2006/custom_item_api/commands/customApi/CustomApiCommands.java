@@ -12,9 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
-import org.super_man2006.custom_item_api.Permissions;
+import org.super_man2006.custom_item_api.permissions.Permissions;
 import org.super_man2006.custom_item_api.utils.IsInt;
 
 public class CustomApiCommands implements CommandExecutor {
@@ -39,14 +38,14 @@ public class CustomApiCommands implements CommandExecutor {
 
                 if (args[1].equalsIgnoreCase("give")) {
                     if (args[3].equalsIgnoreCase("op")) {
-                        Permissions.attachments.get(player.getUniqueId()).setPermission(Permissions.getCustomApiOp(), true);
+                        Permissions.giveCustomApiOp(player);
 
                         sender.sendMessage(Component.text("Added ").append(player.displayName().append(Component.text(" to the op list"))).color(NamedTextColor.GREEN));
                         return true;
                     }
 
                     if (args[3].equalsIgnoreCase("givecmd")) {
-                        Permissions.attachments.get(player.getUniqueId()).setPermission(Permissions.getCustomApiGiveCmd(), true);
+                        Permissions.giveCustomApiGiveCmd(player);
 
                         sender.sendMessage(Component.text("Added ").append(player.displayName().append(Component.text(" to the givecmd list"))).color(NamedTextColor.GREEN));
                         return true;
@@ -55,14 +54,14 @@ public class CustomApiCommands implements CommandExecutor {
 
                 if (args[1].equalsIgnoreCase("remove")) {
                     if (args[3].equalsIgnoreCase("op")) {
-                        Permissions.attachments.get(player.getUniqueId()).setPermission(Permissions.getCustomApiOp(), false);
+                        Permissions.removeCustomApiOp(player);
 
                         sender.sendMessage(Component.text("Removed ").append(player.displayName().append(Component.text(" from the op list"))).color(NamedTextColor.RED));
                         return true;
                     }
 
                     if (args[3].equalsIgnoreCase("givecmd")) {
-                        Permissions.attachments.get(player.getUniqueId()).setPermission(Permissions.getCustomApiGiveCmd(), false);
+                        Permissions.removeCustomApiGiveCmd(player);
 
                         sender.sendMessage(Component.text("Removed ").append(player.displayName().append(Component.text(" from the givecmd list"))).color(NamedTextColor.RED));
                         return true;
