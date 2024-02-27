@@ -64,7 +64,7 @@ If you want to place a custom block using this item you can add this with Custom
 example:
 ````java
 NamespacedKey itemKey = new NamespacedKey(plugin, "example_item");
-CustomItem customItem = new CustomItem(Material.FURNACE, itemKey, Class.forName("org.super_man2006.custom_item_api.utils.blocks.EmptyCustomItemAction"));
+CustomItem customItem = new CustomItem(Material.FURNACE, itemKey, Class.forName("org.super_man2006.custom_item_api.utils.items.EmptyCustomItemAction"));
 customItem.setCustomBlock(blockKey);
 customItem.setName(Component.text("Example"));
 ``````
