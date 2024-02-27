@@ -42,21 +42,6 @@ public class VersionCheck {
                 AtomicLong latestVersion = new AtomicLong(0);
 
                 jsonObject.forEach(jsonElement -> {
-                    String[] timeString = jsonElement.getAsJsonObject().get("published_at").getAsString().replace("T", "-").replace("Z", "").replace(":", "-").split("-");
-
-                    List<String> finalTimeArray = new ArrayList<>();
-                    Arrays.stream(timeString).forEach(s -> finalTimeArray.add(s));
-                    List<String> timeArray = finalTimeArray;
-
-                    String indicator = "";
-
-                    if (Integer.parseInt(timeArray.get(3)) > 12) {
-                        timeArray.set(3, String.valueOf(Integer.parseInt(timeArray.get(3)) - 12));
-                        indicator = "PM";
-                    } else {
-                        indicator = "AM";
-                    }
-
                     try {
                         //2024-02-20T20:43:24Z
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
