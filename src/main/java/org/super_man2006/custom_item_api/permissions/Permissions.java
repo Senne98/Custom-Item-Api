@@ -32,17 +32,22 @@ public class Permissions implements Listener {
     private static Permission CustomApiGiveCmd = new Permission("customitemapi.givecmd", PermissionDefault.FALSE);
     private static List<UUID> opPlayers = new ArrayList<>();
     private static List<UUID> giveCmdPlayers = new ArrayList<>();
+    private static boolean permChanged;
 
     public static Permission getCustomApiOp() {
         return CustomApiOp;
     }
 
     public static void giveCustomApiOp(Player player) {
+        permChanged = true;
+
         Permissions.attachments.get(player.getUniqueId()).setPermission(CustomApiOp, true);
         opPlayers.add(player.getUniqueId());
     }
 
     public static void removeCustomApiOp(Player player) {
+        permChanged = true;
+
         Permissions.attachments.get(player.getUniqueId()).setPermission(CustomApiOp, true);
         if (opPlayers.contains(player.getUniqueId())) {
             opPlayers.remove(player.getUniqueId());
@@ -54,11 +59,15 @@ public class Permissions implements Listener {
     }
 
     public static void giveCustomApiGiveCmd(Player player) {
+        permChanged = true;
+
         Permissions.attachments.get(player.getUniqueId()).setPermission(CustomApiGiveCmd, true);
         giveCmdPlayers.add(player.getUniqueId());
     }
 
     public static void removeCustomApiGiveCmd(Player player) {
+        permChanged = true;
+
         Permissions.attachments.get(player.getUniqueId()).setPermission(CustomApiGiveCmd, true);
         if (giveCmdPlayers.contains(player.getUniqueId())) {
             giveCmdPlayers.remove(player.getUniqueId());
@@ -66,6 +75,8 @@ public class Permissions implements Listener {
     }
 
     public static void load() {
+        permChanged = false;
+
         File permissionsFile = new File(CustomItemApi.plugin.getDataFolder(), "data/permissions.json");
         try {
             JsonReader reader = new JsonReader(new FileReader(permissionsFile));
@@ -91,6 +102,9 @@ public class Permissions implements Listener {
     }
 
     public static void save() {
+        if (!permChanged) return;
+        permChanged = false;
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             JsonWriter writer = new JsonWriter(new FileWriter(new File(CustomItemApi.plugin.getDataFolder(), "data/permissions.json")));
