@@ -4,7 +4,6 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.super_man2006.custom_item_api.Coordinates.Coordinates;
 
 import java.nio.ByteBuffer;
 

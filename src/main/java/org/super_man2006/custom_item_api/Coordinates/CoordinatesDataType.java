@@ -1,6 +1,5 @@
 package org.super_man2006.custom_item_api.Coordinates;
 
-import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
