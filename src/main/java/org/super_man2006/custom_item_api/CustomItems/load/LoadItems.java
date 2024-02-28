@@ -2,8 +2,6 @@ package org.super_man2006.custom_item_api.CustomItems.load;
 
 import org.bukkit.NamespacedKey;
 import org.super_man2006.custom_item_api.CustomItemApi;
-import org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock;
-import org.super_man2006.custom_item_api.CustomItems.blocks.TransparentCustomBlock;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 
 import java.io.File;
