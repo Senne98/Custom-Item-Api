@@ -14,6 +14,7 @@ import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.events.CustomBlockBreakEvent;
+import org.super_man2006.custom_item_api.pdc.PersistentData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,42 +27,19 @@ public class BreakBlock implements Listener {
     public void onBreak(BlockBreakEvent e) {
         Location location = e.getBlock().getLocation();
 
-        Chunk chunk = location.getChunk();
-        PersistentDataContainer container = chunk.getPersistentDataContainer();
-
-        AtomicBoolean contains = new AtomicBoolean();
-        contains.set(false);
-
-        if (!container.has(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey))) {
-            return;
-        }
-
-        NamespacedKey locationKey = new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey);
-        NamespacedKey uuidKey = new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey);
+        PersistentDataContainer container = PersistentData.getPersistentDataContainer(location);
+        if (!(container.has(new NamespacedKey(CustomItemApi.plugin, "namespacedkey"), PersistentDataType.STRING) && CustomBlock.isCustomBlock(NamespacedKey.fromString(container.get(new NamespacedKey(CustomItemApi.plugin, "namespacedkey"), PersistentDataType.STRING))))) return;
 
         e.setDropItems(false);
 
         World world = location.getWorld();
-        UUID uuid = container.get(uuidKey, new UuidDataType());
-        ItemDisplay itemDisplay = (ItemDisplay) world.getEntity(uuid);
 
-        PersistentDataContainer dataContainer = itemDisplay.getPersistentDataContainer();
-
-        CustomBlock customBlock;
-        CustomItem customItem;
-
-        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey") )) {
-            customBlock = CustomBlock.fromNamespacedKey(NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING)));
-        } else {
-            return;
-        }
-
+        CustomBlock customBlock = CustomBlock.fromNamespacedKey(NamespacedKey.fromString(container.get(new NamespacedKey(CustomItemApi.plugin, "namespacedkey"), PersistentDataType.STRING)));
 
         CustomBlockBreakEvent customBlockBreakEvent = new CustomBlockBreakEvent(e, customBlock.getKey());
         if (!customBlockBreakEvent.callEvent()) {
             e.setCancelled(true);
         }
-
 
         if (customBlock.hasCustomItem()) {
             NamespacedKey customItemKey = customBlock.getCustomItem();
@@ -73,29 +51,24 @@ public class BreakBlock implements Listener {
             }
         }
 
-        container.remove(locationKey);
-        container.remove(uuidKey);
-
-        PersistentDataContainer displayContainer = itemDisplay.getPersistentDataContainer();
-
         List<UUID> uuidList = new ArrayList<>();
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType()));
         }
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType()));
         }
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType()));
         }
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType()));
         }
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType()));
         }
-        if (displayContainer.has(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType())) {
-            uuidList.add(displayContainer.get(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType()));
+        if (container.has(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType())) {
+            uuidList.add(container.get(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType()));
         }
 
         uuidList.forEach(uuid1 -> {
@@ -103,6 +76,16 @@ public class BreakBlock implements Listener {
             display.remove();
         });
 
-        itemDisplay.remove();
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "customItem"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "x"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "y"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "z"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "minx"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "miny"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "minz"));
+        container.remove(new NamespacedKey(CustomItemApi.plugin, "face"));
+
+        PersistentData.setPersistentDataContainer(location, container);
     }
 }

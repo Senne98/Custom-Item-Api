@@ -16,7 +16,7 @@ public class PistonMove implements Listener {
     @EventHandler
     public void extend(BlockPistonExtendEvent e) {
 
-        List<Location> blocks = new ArrayList<>();
+        //List<Location> blocks = new ArrayList<>();
         List<Block> blockList = e.getBlocks();
 
         AtomicBoolean cancel = new AtomicBoolean(false);
@@ -37,7 +37,7 @@ public class PistonMove implements Listener {
             return;
         }
 
-        List<Location> blocks = new ArrayList<>();
+        //List<Location> blocks = new ArrayList<>();
         List<Block> blockList = e.getBlocks();
 
         AtomicBoolean cancel = new AtomicBoolean(false);
