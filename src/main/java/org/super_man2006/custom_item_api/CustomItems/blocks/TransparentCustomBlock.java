@@ -21,6 +21,7 @@ import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
+import org.super_man2006.custom_item_api.pdc.PersistentData;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 
 import java.util.ArrayList;
@@ -88,14 +89,15 @@ public class TransparentCustomBlock extends CustomBlock {
         itemDisplayX.setItemStack(super.getItemstack());
         itemDisplayX.setBillboard(Display.Billboard.FIXED);
 
-        PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, getKey().toString());
+        PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
 
+        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, getKey().toString());
         if (getCustomItem() != null) {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, getCustomItem().toString());
         }
-
+        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType(), itemDisplayX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "blocktype"), PersistentDataType.STRING, "transparent");
+        itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "blocktype"), PersistentDataType.STRING, "transparent");
 
         if (getRotation() == Rotation.ALL_BLOCKFACE) {
             AxisAngle4f leftRotation = leftRotationCalculation(blockFace);
@@ -103,7 +105,7 @@ public class TransparentCustomBlock extends CustomBlock {
             itemDisplayX.setTransformation(transformation);
             itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
 
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
 
         } else if (getRotation() == Rotation.AROUND_Y){
@@ -114,14 +116,11 @@ public class TransparentCustomBlock extends CustomBlock {
             itemDisplayX.setTransformation(transformationX);
             itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
 
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ()));
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
         }
 
-        Chunk chunk = location.getChunk();
-
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey), new CoordinatesDataType(), new Coordinates(location.blockX(), location.blockY(), location.blockZ()));
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey), new UuidDataType(), itemDisplayX.getUniqueId());
+        PersistentData.setPersistentDataContainer(location, dataContainer);
     }
 
     @Override
@@ -139,12 +138,16 @@ public class TransparentCustomBlock extends CustomBlock {
         itemDisplayX.setItemStack(getItemstack());
         itemDisplayX.setBillboard(Display.Billboard.FIXED);
 
-        PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
+        PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
+
+        //PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, getKey().toString());
         if (getCustomItem() != null) {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, getCustomItem().toString());
         }
+        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType(), itemDisplayX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "blocktype"), PersistentDataType.STRING, "transparent");
+        itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "blocktype"), PersistentDataType.STRING, "transparent");
 
 
         if (getRotation() == Rotation.ALL_BLOCKFACE) {
@@ -155,16 +158,9 @@ public class TransparentCustomBlock extends CustomBlock {
             itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ()));
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
-
-            List<Object> returnVal = new ArrayList<>();
-            returnVal.add(location);
-            returnVal.add(itemDisplayX.getUniqueId());
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
         }
 
-        Chunk chunk = location.getChunk();
-
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey), new CoordinatesDataType(), new Coordinates(location.blockX(), location.blockY(), location.blockZ()));
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey), new UuidDataType(), itemDisplayX.getUniqueId());
+        PersistentData.setPersistentDataContainer(location, dataContainer);
     }
 }

@@ -20,6 +20,7 @@ import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
+import org.super_man2006.custom_item_api.pdc.PersistentData;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 
 import java.util.*;
@@ -153,31 +154,13 @@ public class CustomBlock {
     }
 
     public static CustomBlock fromLocation(Location location) {
-        Chunk chunk = location.getChunk();
-        PersistentDataContainer container = chunk.getPersistentDataContainer();
+        PersistentDataContainer container = PersistentData.getPersistentDataContainer(location);
 
-        AtomicBoolean contains = new AtomicBoolean();
-        contains.set(false);
-
-        if (!container.has(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey))) {
+        if (!(container.has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING) && isCustomBlock(NamespacedKey.fromString(container.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING))))) {
             return null;
         }
 
-        NamespacedKey uuidKey = new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.getBlockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey);
-
-        World world = location.getWorld();
-        UUID uuid = container.get(uuidKey, new UuidDataType());
-        ItemDisplay itemDisplay = (ItemDisplay) world.getEntity(uuid);
-
-        PersistentDataContainer dataContainer = itemDisplay.getPersistentDataContainer();
-        NamespacedKey key = NamespacedKey.fromString(dataContainer.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING));
-
-
-        if (!instances.containsKey(key)) {
-            return null;
-        }
-
-        return instances.get(key);
+        return fromNamespacedKey(NamespacedKey.fromString(container.get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING)));
     }
 
     public Class getActions() {
@@ -204,12 +187,6 @@ public class CustomBlock {
         this.placedBlock = placedBlock;
         return this;
     }
-
-    /*public void setDropItem(Material material) {
-        dropVanillaBoolean = true;
-        customItem = null;
-        dropVanilla = material;
-    }*/
 
     public CustomBlock setDropItem(NamespacedKey item) {
         this.customItem = item;
@@ -253,11 +230,13 @@ public class CustomBlock {
         itemDisplayMinZ.setItemStack(getItemstack());
         itemDisplayMinZ.setBillboard(Display.Billboard.FIXED);
 
-        PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
+        PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
+
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, key.toString());
         if (customItem != null) {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
         }
+        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType(), itemDisplayX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType(), itemDisplayMinX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType(), itemDisplayY.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType(), itemDisplayMinY.getUniqueId());
@@ -336,17 +315,9 @@ public class CustomBlock {
             itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
-
-            List<Object> returnVal = new ArrayList<>();
-            returnVal.add(location);
-            returnVal.add(itemDisplayX.getUniqueId());
-
         }
 
-        Chunk chunk = location.getChunk();
-
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey), new CoordinatesDataType(), new Coordinates(location.blockX(), location.blockY(), location.blockZ()));
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey), new UuidDataType(), itemDisplayX.getUniqueId());
+        PersistentData.setPersistentDataContainer(location, dataContainer);
     }
 
     public void place(Location location, BlockFace blockFace) {
@@ -378,11 +349,13 @@ public class CustomBlock {
         itemDisplayMinZ.setItemStack(getItemstack());
         itemDisplayMinZ.setBillboard(Display.Billboard.FIXED);
 
-        PersistentDataContainer dataContainer = itemDisplayX.getPersistentDataContainer();
+        PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
+
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, key.toString());
         if (customItem != null) {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
         }
+        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType(), itemDisplayX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType(), itemDisplayMinX.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType(), itemDisplayY.getUniqueId());
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType(), itemDisplayMinY.getUniqueId());
@@ -422,17 +395,9 @@ public class CustomBlock {
             itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
-
-            List<Object> returnVal = new ArrayList<>();
-            returnVal.add(location);
-            returnVal.add(itemDisplayX.getUniqueId());
-
         }
 
-        Chunk chunk = location.getChunk();
-
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.locationKey), new CoordinatesDataType(), new Coordinates(location.blockX(), location.blockY(), location.blockZ()));
-        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.getBlockZ()) + CustomItemApi.uuidKey), new UuidDataType(), itemDisplayX.getUniqueId());
+        PersistentData.setPersistentDataContainer(location, dataContainer);
     }
 
     static AxisAngle4f leftRotationCalculation(BlockFace face) {
@@ -542,11 +507,8 @@ public class CustomBlock {
      * @return true if location has a custom block.
      */
     public static boolean isCustomBlock(Location location) {
-        Chunk chunk = location.getChunk();
-        PersistentDataContainer dataContainer = chunk.getPersistentDataContainer();
-
-        if (dataContainer.has(new NamespacedKey(CustomItemApi.plugin, String.valueOf(location.getBlockX()) + String.valueOf(location.blockY()) + String.valueOf(location.blockZ()) + CustomItemApi.locationKey))) {
-            return  true;
+        if (PersistentData.getPersistentDataContainer(location).has(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING) && isCustomBlock(NamespacedKey.fromString(PersistentData.getPersistentDataContainer(location).get(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING)))) {
+            return true;
         }
 
         return false;
