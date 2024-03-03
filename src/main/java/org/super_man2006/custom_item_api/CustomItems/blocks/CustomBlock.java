@@ -21,7 +21,9 @@ import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.pdc.PersistentData;
+import org.super_man2006.custom_item_api.utils.MaterialUtils;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationArrayDataType;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -317,7 +319,22 @@ public class CustomBlock {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
         }
 
+        Chunk chunk = location.getChunk();
+        Location[] locationsOld = chunk.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType());
+
+        Location[] locationsNew;
+        if (locationsOld == null) {
+            locationsNew = new Location[1];
+            locationsNew[0] = location;
+        } else {
+            locationsNew = Arrays.copyOf(locationsOld, locationsOld.length + 1);
+            locationsNew[locationsOld.length] = location;
+        }
+        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType(), locationsNew);
+
         PersistentData.setPersistentDataContainer(location, dataContainer);
+
+        removeUnneededDisplays(location);
     }
 
     public void place(Location location, BlockFace blockFace) {
@@ -397,7 +414,73 @@ public class CustomBlock {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
         }
 
+        Chunk chunk = location.getChunk();
+        Location[] locationsOld = chunk.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType());
+
+        Location[] locationsNew;
+        if (locationsOld == null) {
+            locationsNew = new Location[1];
+            locationsNew[0] = location;
+        } else {
+            locationsNew = Arrays.copyOf(locationsOld, locationsOld.length + 1);
+            locationsNew[locationsOld.length] = location;
+        }
+        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType(), locationsNew);
+
         PersistentData.setPersistentDataContainer(location, dataContainer);
+
+        removeUnneededDisplays(location);
+    }
+
+    public void removeUnneededDisplays(Location location) {
+        if (!isCustomBlock(location)) return;
+
+        PersistentDataContainer persistentData = PersistentData.getPersistentDataContainer(location);
+
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "x"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.EAST).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "x"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "y"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.UP).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "y"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "y"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "z"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.SOUTH).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "z"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "z"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minx"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.WEST).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "minx"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "minx"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "miny"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.DOWN).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "miny"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "miny"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minz"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.NORTH).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "minz"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "minz"));
+            }
+        }
+
+        PersistentData.setPersistentDataContainer(location, persistentData);
     }
 
     static AxisAngle4f leftRotationCalculation(BlockFace face) {

@@ -71,6 +71,7 @@ public final class CustomItemApi extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CustomBlockEvents(), this);
         getServer().getPluginManager().registerEvents(new CustomItemEvents(), this);
         getServer().getPluginManager().registerEvents(new Permissions(), this);
+        getServer().getPluginManager().registerEvents(new DisplayEntityControl(), this);
 
         //Permissions
         getServer().getPluginManager().addPermission(Permissions.getCustomApiOp());

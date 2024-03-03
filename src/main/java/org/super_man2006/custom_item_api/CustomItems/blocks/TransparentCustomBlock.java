@@ -22,11 +22,11 @@ import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.pdc.PersistentData;
+import org.super_man2006.custom_item_api.utils.MaterialUtils;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationArrayDataType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class TransparentCustomBlock extends CustomBlock {
 
@@ -120,7 +120,22 @@ public class TransparentCustomBlock extends CustomBlock {
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
         }
 
+        Chunk chunk = location.getChunk();
+        Location[] locationsOld = chunk.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType());
+
+        Location[] locationsNew;
+        if (locationsOld == null) {
+            locationsNew = new Location[1];
+            locationsNew[0] = location;
+        } else {
+            locationsNew = Arrays.copyOf(locationsOld, locationsOld.length + 1);
+            locationsNew[locationsOld.length] = location;
+        }
+        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType(), locationsNew);
+
         PersistentData.setPersistentDataContainer(location, dataContainer);
+
+        removeUnneededDisplays(location);
     }
 
     @Override
@@ -161,6 +176,46 @@ public class TransparentCustomBlock extends CustomBlock {
             itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
         }
 
+        Chunk chunk = location.getChunk();
+        Location[] locationsOld = chunk.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType());
+
+        Location[] locationsNew;
+        if (locationsOld == null) {
+            locationsNew = new Location[1];
+            locationsNew[0] = location;
+        } else {
+            locationsNew = Arrays.copyOf(locationsOld, locationsOld.length + 1);
+            locationsNew[locationsOld.length] = location;
+        }
+        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType(), locationsNew);
+
         PersistentData.setPersistentDataContainer(location, dataContainer);
+
+        removeUnneededDisplays(location);
+    }
+
+    @Override
+    public void removeUnneededDisplays(Location location) {
+        if (!isCustomBlock(location)) return;
+
+        boolean canRemove = true;
+
+        List<BlockFace> faces = List.of(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+
+        for (BlockFace blockFace : faces) {
+            if (MaterialUtils.isTransparent(location.getBlock().getRelative(blockFace).getType())) {
+                canRemove = false;
+                break;
+            }
+        }
+
+        if (canRemove) {
+            UUID display = PersistentData.getPersistentDataContainer(location).get(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType());
+            Bukkit.getEntity(display).remove();
+
+            PersistentDataContainer persistentData = PersistentData.getPersistentDataContainer(location);
+            persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "x"));
+            PersistentData.setPersistentDataContainer(location, persistentData);
+        }
     }
 }
