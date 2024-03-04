@@ -7,7 +7,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -15,8 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import org.super_man2006.custom_item_api.Coordinates.Coordinates;
-import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
 import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
@@ -24,9 +25,9 @@ import org.super_man2006.custom_item_api.pdc.PersistentData;
 import org.super_man2006.custom_item_api.utils.MaterialUtils;
 import org.super_man2006.custom_item_api.utils.VectorDataType;
 import org.super_man2006.custom_item_api.utils.dataTypes.LocationArrayDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationDataType;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomBlock {
 
@@ -270,12 +271,12 @@ public class CustomBlock {
             itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
             itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
 
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
+            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
+            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
+            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
 
@@ -309,12 +310,12 @@ public class CustomBlock {
             itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
             itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
 
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
+            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
+            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
+            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
         }
@@ -404,12 +405,12 @@ public class CustomBlock {
             itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
             itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
 
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
+            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
+            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
+            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
+            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
+            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
 
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
         }
