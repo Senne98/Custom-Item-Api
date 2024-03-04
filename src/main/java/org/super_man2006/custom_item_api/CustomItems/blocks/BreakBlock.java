@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
-import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.events.CustomBlockBreakEvent;
 import org.super_man2006.custom_item_api.pdc.PersistentData;
@@ -19,7 +19,6 @@ import org.super_man2006.custom_item_api.pdc.PersistentData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BreakBlock implements Listener {
 

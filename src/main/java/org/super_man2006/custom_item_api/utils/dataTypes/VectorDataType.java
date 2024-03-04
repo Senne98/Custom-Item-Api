@@ -1,4 +1,4 @@
-package org.super_man2006.custom_item_api.utils;
+package org.super_man2006.custom_item_api.utils.dataTypes;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
