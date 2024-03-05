@@ -12,12 +12,10 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.super_man2006.custom_item_api.Coordinates.Coordinates;
-import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,12 +202,12 @@ public class LightUpdate implements Listener {
                 if (display.getPersistentDataContainer().has(new NamespacedKey(CustomItemApi.plugin, "lightlocation"))) {
                     if (display.getPersistentDataContainer().has(new NamespacedKey(CustomItemApi.plugin, "blocktype")) && display.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "blocktype"), PersistentDataType.STRING).equals("transparent")) {
 
-                        Coordinates coordinates = display.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType());
+                        Location lightLoc = display.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType());
 
                         int highestSkyLightLevel = 0;
                         int highestBlockLightLevel = 0;
 
-                        Block lightBlock = new Location(world, coordinates.getX() + 1, coordinates.getY(), coordinates.getZ()).getBlock();
+                        Block lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX() + 1, lightLoc.getY(), lightLoc.getZ()).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -217,7 +215,7 @@ public class LightUpdate implements Listener {
                             highestSkyLightLevel = lightBlock.getLightFromSky();
                         }
 
-                        lightBlock = new Location(world, coordinates.getX() - 1, coordinates.getY(), coordinates.getZ()).getBlock();
+                        lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX() - 1, lightLoc.getY(), lightLoc.getZ()).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -225,7 +223,7 @@ public class LightUpdate implements Listener {
                             highestSkyLightLevel = lightBlock.getLightFromSky();
                         }
 
-                        lightBlock = new Location(world, coordinates.getX(), coordinates.getY() + 1, coordinates.getZ()).getBlock();
+                        lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX(), lightLoc.getY() + 1, lightLoc.getZ()).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -233,7 +231,7 @@ public class LightUpdate implements Listener {
                             highestSkyLightLevel = lightBlock.getLightFromSky();
                         }
 
-                        lightBlock = new Location(world, coordinates.getX(), coordinates.getY() - 1, coordinates.getZ()).getBlock();
+                        lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX(), lightLoc.getY() - 1, lightLoc.getZ()).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -241,7 +239,7 @@ public class LightUpdate implements Listener {
                             highestSkyLightLevel = lightBlock.getLightFromSky();
                         }
 
-                        lightBlock = new Location(world, coordinates.getX(), coordinates.getY(), coordinates.getZ() + 1).getBlock();
+                        lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX(), lightLoc.getY(), lightLoc.getZ() + 1).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -249,7 +247,7 @@ public class LightUpdate implements Listener {
                             highestSkyLightLevel = lightBlock.getLightFromSky();
                         }
 
-                        lightBlock = new Location(world, coordinates.getX(), coordinates.getY(), coordinates.getZ() - 1).getBlock();
+                        lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX(), lightLoc.getY(), lightLoc.getZ() - 1).getBlock();
                         if (lightBlock.getLightFromBlocks() > highestBlockLightLevel) {
                             highestBlockLightLevel = lightBlock.getLightFromBlocks();
                         }
@@ -268,8 +266,8 @@ public class LightUpdate implements Listener {
 
                     } else {
 
-                        Coordinates coordinates = display.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType());
-                        Block lightBlock = new Location(world, coordinates.getX(), coordinates.getY(), coordinates.getZ()).getBlock();
+                        Location lightLoc = display.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType());
+                        Block lightBlock = new Location(lightLoc.getWorld(), lightLoc.getX(), lightLoc.getY(), lightLoc.getZ()).getBlock();
 
                         display.setBrightness(new Display.Brightness(lightBlock.getLightFromBlocks(), lightBlock.getLightFromSky()));
                     }

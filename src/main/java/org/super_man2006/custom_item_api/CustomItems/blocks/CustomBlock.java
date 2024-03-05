@@ -7,7 +7,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -15,16 +18,17 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import org.super_man2006.custom_item_api.Coordinates.Coordinates;
-import org.super_man2006.custom_item_api.Coordinates.CoordinatesDataType;
 import org.super_man2006.custom_item_api.CustomItemApi;
-import org.super_man2006.custom_item_api.CustomItems.UuidDataType;
+import org.super_man2006.custom_item_api.utils.VectorToBlockFace;
+import org.super_man2006.custom_item_api.utils.dataTypes.UuidDataType;
 import org.super_man2006.custom_item_api.CustomItems.items.CustomItem;
 import org.super_man2006.custom_item_api.pdc.PersistentData;
-import org.super_man2006.custom_item_api.utils.VectorDataType;
+import org.super_man2006.custom_item_api.utils.MaterialUtils;
+import org.super_man2006.custom_item_api.utils.dataTypes.VectorDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationArrayDataType;
+import org.super_man2006.custom_item_api.utils.dataTypes.LocationDataType;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomBlock {
 
@@ -209,195 +213,173 @@ public class CustomBlock {
         BlockData blockData = block.getBlockData();
         world.setBlockData(location, blockData);
 
-        Location displayLocation = new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5);
-
-        ItemDisplay itemDisplayX = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayX.setItemStack(getItemstack());
-        itemDisplayX.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinX = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinX.setItemStack(getItemstack());
-        itemDisplayMinX.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayY = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayY.setItemStack(getItemstack());
-        itemDisplayY.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinY = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinY.setItemStack(getItemstack());
-        itemDisplayMinY.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayZ = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayZ.setItemStack(getItemstack());
-        itemDisplayZ.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinZ = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinZ.setItemStack(getItemstack());
-        itemDisplayMinZ.setBillboard(Display.Billboard.FIXED);
-
         PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
-
         dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, key.toString());
-        if (customItem != null) {
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
-        }
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType(), itemDisplayX.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType(), itemDisplayMinX.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType(), itemDisplayY.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType(), itemDisplayMinY.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType(), itemDisplayZ.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType(), itemDisplayMinZ.getUniqueId());
+        if (customItem != null) dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
 
         if (rotation == Rotation.ALL_BLOCKFACE) {
-
-            AxisAngle4f leftRotation = leftRotationCalculation(blockFace);
-
-            Transformation transformationX = new Transformation(new Vector3f().add(.5f, 0, 0), leftRotation, scaleCalculation("X", blockFace), new AxisAngle4f());
-            Transformation transformationMinX = new Transformation(new Vector3f().add(-.5f, 0, 0), leftRotation, scaleCalculation("X", blockFace), new AxisAngle4f());
-            Transformation transformationY = new Transformation(new Vector3f().add(0, .5f, 0), leftRotation, scaleCalculation("Y", blockFace), new AxisAngle4f());
-            Transformation transformationMinY = new Transformation(new Vector3f().add(0, -.5f, 0), leftRotation, scaleCalculation("Y", blockFace), new AxisAngle4f());
-            Transformation transformationZ = new Transformation(new Vector3f().add(0, 0, .5f), leftRotation, scaleCalculation("Z", blockFace), new AxisAngle4f());
-            Transformation transformationMinZ = new Transformation(new Vector3f().add(0, 0, -.5f), leftRotation, scaleCalculation("Z", blockFace), new AxisAngle4f());
-
-            itemDisplayX.setTransformation(transformationX);
-            itemDisplayMinX.setTransformation(transformationMinX);
-            itemDisplayY.setTransformation(transformationY);
-            itemDisplayMinY.setTransformation(transformationMinY);
-            itemDisplayZ.setTransformation(transformationZ);
-            itemDisplayMinZ.setTransformation(transformationMinZ);
-
-            itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
-            itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
-
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
-
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
-
-            List<Object> returnVal = new ArrayList<>();
-            returnVal.add(location);
-            returnVal.add(itemDisplayX.getUniqueId());
-
         } else if (rotation == Rotation.AROUND_Y){
             BlockFace face = player.getFacing().getOppositeFace();
-
-            AxisAngle4f leftRotation = leftRotationCalculation(face);
-
-            Transformation transformationX = new Transformation(new Vector3f().add(.5f, 0, 0), leftRotation, scaleCalculation("X", face), new AxisAngle4f());
-            Transformation transformationMinX = new Transformation(new Vector3f().add(-.5f, 0, 0), leftRotation, scaleCalculation("X", face), new AxisAngle4f());
-            Transformation transformationY = new Transformation(new Vector3f().add(0, .5f, 0), leftRotation, scaleCalculation("Y", face), new AxisAngle4f());
-            Transformation transformationMinY = new Transformation(new Vector3f().add(0, -.5f, 0), leftRotation, scaleCalculation("Y", face), new AxisAngle4f());
-            Transformation transformationZ = new Transformation(new Vector3f().add(0, 0, .5f), leftRotation, scaleCalculation("Z", face), new AxisAngle4f());
-            Transformation transformationMinZ = new Transformation(new Vector3f().add(0, 0, -.5f), leftRotation, scaleCalculation("Z", face), new AxisAngle4f());
-
-            itemDisplayX.setTransformation(transformationX);
-            itemDisplayMinX.setTransformation(transformationMinX);
-            itemDisplayY.setTransformation(transformationY);
-            itemDisplayMinY.setTransformation(transformationMinY);
-            itemDisplayZ.setTransformation(transformationZ);
-            itemDisplayMinZ.setTransformation(transformationMinZ);
-
-            itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
-            itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
-
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
-
             dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), face.getDirection());
         }
 
+        Chunk chunk = location.getChunk();
+        Location[] locationsOld = chunk.getPersistentDataContainer().get(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType());
+        Location[] locationsNew;
+
+        if (locationsOld == null) {
+            locationsNew = new Location[1];
+            locationsNew[0] = location;
+        } else {
+            locationsNew = Arrays.copyOf(locationsOld, locationsOld.length + 1);
+            locationsNew[locationsOld.length] = location;
+        }
+        chunk.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "customblocklocations"), new LocationArrayDataType(), locationsNew);
+
         PersistentData.setPersistentDataContainer(location, dataContainer);
+
+        addNeededDisplays(location, new ArrayList<>());
     }
 
-    public void place(Location location, BlockFace blockFace) {
+    public void removeUnneededDisplays(Location location) {
+        if (!isCustomBlock(location)) return;
 
-        World world = location.getWorld();
-        Block block = world.getBlockAt(location);
-        block.setType(placedBlock);
-        BlockData blockData = block.getBlockData();
-        world.setBlockData(location, blockData);
+        PersistentDataContainer persistentData = PersistentData.getPersistentDataContainer(location);
 
-        Location displayLocation = new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5);
-
-        ItemDisplay itemDisplayX = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayX.setItemStack(getItemstack());
-        itemDisplayX.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinX = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinX.setItemStack(getItemstack());
-        itemDisplayMinX.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayY = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayY.setItemStack(getItemstack());
-        itemDisplayY.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinY = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinY.setItemStack(getItemstack());
-        itemDisplayMinY.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayZ = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayZ.setItemStack(getItemstack());
-        itemDisplayZ.setBillboard(Display.Billboard.FIXED);
-        ItemDisplay itemDisplayMinZ = (ItemDisplay) world.spawnEntity(displayLocation, EntityType.ITEM_DISPLAY);
-        itemDisplayMinZ.setItemStack(getItemstack());
-        itemDisplayMinZ.setBillboard(Display.Billboard.FIXED);
-
-        PersistentDataContainer dataContainer = PersistentData.getPersistentDataContainer(location);
-
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "namespacedKey"), PersistentDataType.STRING, key.toString());
-        if (customItem != null) {
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "customItem"), PersistentDataType.STRING, customItem.toString());
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "x"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.EAST).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "x"));
+            }
         }
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "X"), new UuidDataType(), itemDisplayX.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinX"), new UuidDataType(), itemDisplayMinX.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Y"), new UuidDataType(), itemDisplayY.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinY"), new UuidDataType(), itemDisplayMinY.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "Z"), new UuidDataType(), itemDisplayZ.getUniqueId());
-        dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "MinZ"), new UuidDataType(), itemDisplayMinZ.getUniqueId());
-
-        if (rotation == Rotation.ALL_BLOCKFACE) {
-
-            AxisAngle4f leftRotation = leftRotationCalculation(blockFace);
-
-            Transformation transformationX = new Transformation(new Vector3f().add(.5f, 0, 0), leftRotation, scaleCalculation("X", blockFace), new AxisAngle4f());
-            Transformation transformationMinX = new Transformation(new Vector3f().add(-.5f, 0, 0), leftRotation, scaleCalculation("X", blockFace), new AxisAngle4f());
-            Transformation transformationY = new Transformation(new Vector3f().add(0, .5f, 0), leftRotation, scaleCalculation("Y", blockFace), new AxisAngle4f());
-            Transformation transformationMinY = new Transformation(new Vector3f().add(0, -.5f, 0), leftRotation, scaleCalculation("Y", blockFace), new AxisAngle4f());
-            Transformation transformationZ = new Transformation(new Vector3f().add(0, 0, .5f), leftRotation, scaleCalculation("Z", blockFace), new AxisAngle4f());
-            Transformation transformationMinZ = new Transformation(new Vector3f().add(0, 0, -.5f), leftRotation, scaleCalculation("Z", blockFace), new AxisAngle4f());
-
-            itemDisplayX.setTransformation(transformationX);
-            itemDisplayMinX.setTransformation(transformationMinX);
-            itemDisplayY.setTransformation(transformationY);
-            itemDisplayMinY.setTransformation(transformationMinY);
-            itemDisplayZ.setTransformation(transformationZ);
-            itemDisplayMinZ.setTransformation(transformationMinZ);
-
-            itemDisplayX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinX.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayMinY.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()).getBlock().getLightFromSky()));
-            itemDisplayZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1).getBlock().getLightFromSky()));
-            itemDisplayMinZ.setBrightness(new Display.Brightness(new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromBlocks(), new Location(displayLocation.getWorld(), displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1).getBlock().getLightFromSky()));
-
-            itemDisplayX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() + 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayMinX.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX() - 1, displayLocation.getY(), displayLocation.getZ()));
-            itemDisplayY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() + 1, displayLocation.getZ()));
-            itemDisplayMinY.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY() - 1, displayLocation.getZ()));
-            itemDisplayZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() + 1));
-            itemDisplayMinZ.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new CoordinatesDataType(), new Coordinates(displayLocation.getX(), displayLocation.getY(), displayLocation.getZ() - 1));
-
-            dataContainer.set(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType(), blockFace.getDirection());
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "y"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.UP).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "y"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "y"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "z"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.SOUTH).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "z"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "z"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minx"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.WEST).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "minx"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "minx"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "miny"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.DOWN).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "miny"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "miny"));
+            }
+        }
+        if (persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minz"))) {
+            if (!MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.NORTH).getType())) {
+                UUID display = persistentData.get(new NamespacedKey(CustomItemApi.plugin, "minz"), new UuidDataType());
+                Bukkit.getEntity(display).remove();
+                persistentData.remove(new NamespacedKey(CustomItemApi.plugin, "minz"));
+            }
         }
 
-        PersistentData.setPersistentDataContainer(location, dataContainer);
+        PersistentData.setPersistentDataContainer(location, persistentData);
+    }
+
+    public void addNeededDisplays(Location location, List<Location> emptyOverwrite) {
+        if (!isCustomBlock(location)) return;
+
+        PersistentDataContainer persistentData = PersistentData.getPersistentDataContainer(location);
+        BlockFace face = VectorToBlockFace.get(persistentData.get(new NamespacedKey(CustomItemApi.plugin, "face"), new VectorDataType()));
+        AxisAngle4f leftRotation = leftRotationCalculation(face);
+
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "x"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.EAST).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.EAST).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(.5f, 0, 0), leftRotation, scaleCalculation("X", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX() + 1, location.getY(), location.getZ()).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX() + 1, location.getY(), location.getZ()).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "x"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX() + 1, location.getY(), location.getZ()));
+            }
+        }
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "y"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.UP).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.UP).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(0, .5f, 0), leftRotation, scaleCalculation("Y", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "y"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()));
+            }
+        }
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "z"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.SOUTH).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.SOUTH).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(0, 0, .5f), leftRotation, scaleCalculation("Z", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() + 1).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() + 1).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "z"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() + 1));
+            }
+        }
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minx"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.WEST).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.WEST).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(-.5f, 0, 0), leftRotation, scaleCalculation("X", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX() - 1, location.getY(), location.getZ()).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX() - 1, location.getY(), location.getZ()).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "minx"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX() - 1, location.getY(), location.getZ()));
+            }
+        }
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "miny"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.DOWN).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.DOWN).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(0, -.5f, 0), leftRotation, scaleCalculation("Y", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "miny"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()));
+            }
+        }
+        if (!persistentData.has(new NamespacedKey(CustomItemApi.plugin, "minz"))) {
+            if (emptyOverwrite.contains(location.getBlock().getRelative(BlockFace.NORTH).getLocation()) || MaterialUtils.isTransparent(location.getBlock().getRelative(BlockFace.NORTH).getType())) {
+                ItemDisplay display = (ItemDisplay) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 0.5, location.getZ() + 0.5), EntityType.ITEM_DISPLAY);
+
+                display.setItemStack(getItemstack());
+                display.setBillboard(Display.Billboard.FIXED);
+                display.setTransformation(new Transformation(new Vector3f().add(0, 0, -.5f), leftRotation, scaleCalculation("Z", face), new AxisAngle4f()));
+                display.setBrightness(new Display.Brightness(new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() - 1).getBlock().getLightFromBlocks(), new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() - 1).getBlock().getLightFromSky()));
+
+                persistentData.set(new NamespacedKey(CustomItemApi.plugin, "minz"), new UuidDataType(), display.getUniqueId());
+                display.getPersistentDataContainer().set(new NamespacedKey(CustomItemApi.plugin, "lightlocation"), new LocationDataType(), new Location(location.getWorld(), location.getX(), location.getY(), location.getZ() - 1));
+            }
+        }
+
+        PersistentData.setPersistentDataContainer(location, persistentData);
     }
 
     static AxisAngle4f leftRotationCalculation(BlockFace face) {

@@ -1,6 +1,5 @@
 package org.super_man2006.custom_item_api;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
@@ -22,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class VersionCheck {
 
     public VersionCheck() {
-        URL url = null;
+        URL url;
         try {
             url = new URL("https://api.github.com/repos/Senne98/Custom-Item-Api/releases");
             try (InputStream input = url.openStream()) {
@@ -33,7 +32,6 @@ public class VersionCheck {
                 while ((c = reader.read()) != -1) {
                     jsonString.append((char) c);
                 }
-                Gson gson = new Gson();
                 JsonArray jsonObject = new JsonParser().parse(String.valueOf(jsonString)).getAsJsonArray();
 
                 AtomicReference<String> latestName = new AtomicReference<>("");
