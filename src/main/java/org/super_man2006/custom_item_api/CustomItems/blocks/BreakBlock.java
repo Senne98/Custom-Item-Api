@@ -83,7 +83,6 @@ public class BreakBlock implements Listener {
         container.remove(new NamespacedKey(CustomItemApi.plugin, "minx"));
         container.remove(new NamespacedKey(CustomItemApi.plugin, "miny"));
         container.remove(new NamespacedKey(CustomItemApi.plugin, "minz"));
-        container.remove(new NamespacedKey(CustomItemApi.plugin, "face"));
 
         PersistentData.setPersistentDataContainer(location, container);
     }

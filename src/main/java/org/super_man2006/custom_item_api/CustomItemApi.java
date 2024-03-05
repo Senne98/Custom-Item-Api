@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 public final class CustomItemApi extends JavaPlugin {
-    public static String locationKey = "locationkey";
-    public static String uuidKey = "uuidkey";
+
     public static Plugin plugin;
     public static File settingsFile;
 

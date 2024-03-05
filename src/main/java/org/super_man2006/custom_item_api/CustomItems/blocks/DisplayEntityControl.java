@@ -1,5 +1,7 @@
 package org.super_man2006.custom_item_api.CustomItems.blocks;
 
+import com.destroystokyo.paper.event.block.BlockDestroyEvent;
+import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -16,6 +18,8 @@ import static org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock.f
 import static org.super_man2006.custom_item_api.CustomItems.blocks.CustomBlock.isCustomBlock;
 
 public class DisplayEntityControl implements Listener {
+
+    //remove display entities when a block is placed
     @EventHandler
     public void blockForm(BlockFormEvent e) {
         onPlace(e.getBlock().getLocation());
@@ -73,4 +77,47 @@ public class DisplayEntityControl implements Listener {
         }, 1L);
     }
 
+    //add display entities when a block is broken
+
+    @EventHandler
+    public void blockBreakBlock(BlockBreakBlockEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void blockBreak(BlockBreakEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void blockBurn(BlockBurnEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void blockFade(BlockFadeEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void blockIgnite(BlockIgniteEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void tntPrime(TNTPrimeEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    @EventHandler
+    public void blockDestroy(BlockDestroyEvent e) {
+        onBreak(e.getBlock().getLocation());
+    }
+
+    private void onBreak(Location location) {
+        for (BlockFace face : List.of(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST)) {
+            if (!isCustomBlock(location.getBlock().getRelative(face).getLocation())) continue;
+            fromLocation(location.getBlock().getRelative(face).getLocation()).addNeededDisplays(location.getBlock().getRelative(face).getLocation(), List.of(location.toBlockLocation()));
+        }
+    }
 }
