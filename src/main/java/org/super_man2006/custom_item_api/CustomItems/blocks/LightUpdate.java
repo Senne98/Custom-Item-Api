@@ -144,59 +144,78 @@ public class LightUpdate implements Listener {
             int z = block.getZ();
             World world = block.getWorld();
 
+            int chunckLocX = x%16;
+            int chunckLocZ = z%16;
+
             Arrays.stream((new Location(world, x, 1, z)).getChunk().getEntities()).toList().forEach(entity -> {
                 if (entity instanceof ItemDisplay) {
                     entityList.add((ItemDisplay) entity);
                 }
             });
 
-            Arrays.stream((new Location(world, x + 16, 1, z)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocX > 0) {
+                Arrays.stream((new Location(world, x + 16, 1, z)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x - 16, 1, z)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocX < 14) {
+                Arrays.stream((new Location(world, x - 16, 1, z)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocZ > 0) {
+                Arrays.stream((new Location(world, x, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocZ < 14) {
+                Arrays.stream((new Location(world, x, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x + 16, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if ((15 - chunckLocX) + (15 - chunckLocZ) > 14) {
+                Arrays.stream((new Location(world, x + 16, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x + 16, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if ((15 - chunckLocX) + chunckLocZ > 14) {
+                Arrays.stream((new Location(world, x + 16, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x - 16, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocZ + (15 - chunckLocZ) > 14) {
+                Arrays.stream((new Location(world, x - 16, 1, z + 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
-            Arrays.stream((new Location(world, x - 16, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
-                if (entity instanceof ItemDisplay) {
-                    entityList.add((ItemDisplay) entity);
-                }
-            });
+            if (chunckLocX + chunckLocZ > 14) {
+                Arrays.stream((new Location(world, x - 16, 1, z - 16)).getChunk().getEntities()).toList().forEach(entity -> {
+                    if (entity instanceof ItemDisplay) {
+                        entityList.add((ItemDisplay) entity);
+                    }
+                });
+            }
 
             entityList.forEach(display -> {
                 if (display.getPersistentDataContainer().has(new NamespacedKey(CustomItemApi.plugin, "lightlocation"))) {
