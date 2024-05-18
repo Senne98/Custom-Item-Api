@@ -45,7 +45,7 @@ public class BreakBlock implements Listener {
             ItemStack dropItem = CustomItem.getItemStack(customItemKey);
 
             if (e.getPlayer().getGameMode() == GameMode.SURVIVAL && dropItem != null) {
-                Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.DROPPED_ITEM);
+                Item item = (Item) world.spawnEntity(location.add(.5, .5, .5), EntityType.ITEM);
                 item.setItemStack(dropItem);
             }
         }

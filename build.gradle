@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id("io.papermc.paperweight.userdev") version("1.5.5")
-    id("xyz.jpenilla.run-paper") version "2.1.0"
+    id("io.papermc.paperweight.userdev") version("1.7.1")
+    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = 'org.super_man2006'
-version = '5.4'
+version = '5.5'
 
 repositories {
     mavenCentral()
@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT"
-    paperweight.paperDevBundle("1.20-R0.1-SNAPSHOT")
+    compileOnly "io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT"
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
